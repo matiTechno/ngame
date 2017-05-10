@@ -19,7 +19,8 @@ struct IO
 class App
 {
     public:
-        App(int width, int height, const char* title, int sdl_flags = 0, int posx = SDL_WINDOWPOS_CENTERED, int posy = SDL_WINDOWPOS_CENTERED);
+        App(int width, int height, const char* title, unsigned int sdl_flags = 0, int mixer_flags = 0,
+            int posx = SDL_WINDOWPOS_CENTERED, int posy = SDL_WINDOWPOS_CENTERED);
 
         ~App();
 
@@ -40,10 +41,14 @@ class App
         std::unique_ptr<Del> del_win;
         std::unique_ptr<Del> del_context;
         std::unique_ptr<Del> del_imgui;
+        std::unique_ptr<Del> del_mix_init;
+        std::unique_ptr<Del> del_mix_audio;
         IO io;
         std::vector<std::unique_ptr<Scene>> scenes;
         SDL_Window* win;
         bool should_close;
+
+        void init_mixer(int mixer_flags);
 
         void run();
         void update();

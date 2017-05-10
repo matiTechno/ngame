@@ -5,24 +5,14 @@
 #include <functional>
 #include <iostream>
 #include "imgui_impl_sdl_gl3.h"
-
-class Del {
-public:
-  template <typename T> Del(T &&func) : func(std::forward<T>(func)) {}
-  ~Del() { func(); }
-
-  Del(const Del &) = delete;
-  Del &operator=(Del &) = delete;
-
-private:
-  std::function<void(void)> func;
-};
+#include <NGAME/del.hpp>
+#include <SDL2/SDL_mixer.h>
 
 App* App::handle = nullptr;
 
 App::~App() = default;
 
-App::App(int width, int height, const char *title, int sdl_flags, int posx,
+App::App(int width, int height, const char *title, unsigned int sdl_flags, int mixer_flags, int posx,
          int posy) {
 
     assert(!handle);
@@ -39,7 +29,7 @@ App::App(int width, int height, const char *title, int sdl_flags, int posx,
             << int(ver_linked.minor) << '.' << int(ver_linked.patch)
             << std::endl;
 
-  if (SDL_Init(SDL_INIT_VIDEO))
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
     throw std::runtime_error(std::string("SDL_Init failed: ") + SDL_GetError());
 
   del_sdl = std::make_unique<Del>([]() { SDL_Quit(); });
@@ -82,6 +72,8 @@ App::App(int width, int height, const char *title, int sdl_flags, int posx,
   ImGui_ImplSdlGL3_Init(win);
 
   del_imgui = std::make_unique<Del>([]() { ImGui_ImplSdlGL3_Shutdown(); });
+
+  init_mixer(mixer_flags);
 }
 
 void App::run() {
@@ -118,11 +110,13 @@ void App::update() {
 }
 
 void App::process_input() {
+    io.events.clear();
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
       io.events.push_back(event);
       ImGui_ImplSdlGL3_ProcessEvent(&event);
 
+      // temp
       if (event.type == SDL_QUIT)
       should_close = true;
   }
@@ -177,4 +171,34 @@ void App::manage_scenes() {
         (*it)->is_top_b = false;
 
     scenes.back()->is_top_b = true;
+}
+
+void App::init_mixer(int mixer_flags)
+{
+        SDL_version ver_compiled;
+    SDL_MIXER_VERSION(&ver_compiled);
+    const SDL_version* ver_linked = Mix_Linked_Version();
+
+     std::cout << "compiled against SDL_mixer " << int(ver_compiled.major) << '.' <<
+     int(ver_compiled.minor) << '.' << int(ver_compiled.patch) << std::endl;
+     std::cout << "linked against SDL_mixer " << int(ver_linked->major) << '.' <<
+     int(ver_linked->minor) << '.' << int(ver_linked->patch) << std::endl;
+
+     if(mixer_flags)
+     {
+     int initted = Mix_Init(mixer_flags);
+     if(initted != mixer_flags)
+         throw std::runtime_error(std::string("Mix_Init failed, mixer_flags = ") + std::to_string(mixer_flags) + ": " + Mix_GetError());
+
+     del_mix_init = std::make_unique<Del>([](){
+         Mix_Quit();
+     });
+     }
+
+     if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) == -1)
+         throw std::runtime_error(std::string("Mix_OpenAudio failed: ") + Mix_GetError());
+
+     del_mix_audio = std::make_unique<Del>([](){
+         Mix_CloseAudio();
+     });
 }

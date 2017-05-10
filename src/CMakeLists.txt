@@ -7,7 +7,8 @@ set(SOURCE
     imgui_draw.cpp
     imgui_impl_sdl_gl3.cpp
     scene.cpp
+    sound.cpp
     )
 
 add_executable(app ${SOURCE})
-target_link_libraries(app -lSDL2)
+target_link_libraries(app -lSDL2 -lSDL2_mixer)
