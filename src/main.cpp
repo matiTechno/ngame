@@ -3,11 +3,13 @@
 #include <NGAME/imgui.h>
 #include <SDL2/SDL_mixer.h>
 #include <NGAME/sound.hpp>
+#include <NGAME/gl/shader.hpp>
 class Test: public Scene
 {
 public:
     Test():
-        sample("laser1.mp3")
+        sample("laser1.mp3"),
+        shader("shader1.sh", true)
     {}
 
     void process_input() override
@@ -20,6 +22,8 @@ public:
     }
     void render() override
     {
+        shader.bind();
+
         ImGui::ShowTestWindow();
 
         ImGui::Begin("control");
@@ -37,6 +41,7 @@ public:
 private:
     Sample sample;
     bool vsync = true;
+    Shader shader;
 };
 
 int main() {

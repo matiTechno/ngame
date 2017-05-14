@@ -1,0 +1,10 @@
+opengl wrapper classes: most important *texture && *shader ---- done
+renderer
+font loading
+sprite
+text
+pp_unit
+
+-- now everything will be much better and simpler
+then
+entity component system with mini reflaction and cache friendly mem access

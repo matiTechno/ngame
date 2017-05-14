@@ -10,7 +10,7 @@ Sample::Sample(const std::string& filename, int volume)
 {
   chunk = Mix_LoadWAV(filename.c_str());
   if(!chunk)
-      throw std::runtime_error(std::string("Mix_LoadWAV failed (filename = " + filename + "): " + Mix_GetError()));
+      throw std::runtime_error(std::string("Mix_LoadWAV failed, filename = " + filename + ": " + Mix_GetError()));
 
   del = std::make_unique<Del>([this](){
 
@@ -26,7 +26,7 @@ Music::Music(const std::string& filename, int volume)
     music = Mix_LoadMUS(filename.c_str());
 
     if(!music)
-        throw std::runtime_error(std::string("Mix_LoadMUS failed (filename = " + filename + "): " + Mix_GetError()));
+        throw std::runtime_error(std::string("Mix_LoadMUS failed, filename = " + filename + ": " + Mix_GetError()));
 
     del = std::make_unique<Del>([this](){
         Mix_FreeMusic(music);
@@ -53,13 +53,13 @@ Music::Music(const std::string& filename, int volume)
 
     void Sample::pause()
     {
-        if(channel != - 1 &&Mix_GetChunk(channel))
+        if(channel != -1 && Mix_GetChunk(channel) == chunk)
             Mix_Pause(channel);
     }
 
     void Sample::stop()
     {
-        if(channel != - 1 &&Mix_GetChunk(channel))
+        if(channel != -1 && Mix_GetChunk(channel) == chunk)
         Mix_HaltChannel(channel);
     }
 
@@ -74,7 +74,7 @@ Music::Music(const std::string& filename, int volume)
 
     void Sample::resume()
     {
-         if(channel != - 1 &&Mix_GetChunk(channel))
+         if(channel != -1 && Mix_GetChunk(channel) == chunk)
              Mix_Resume(channel);
     }
 

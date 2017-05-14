@@ -2,7 +2,7 @@
 class Del;
 #include <memory>
 #include <vector>
-#include <NGAME/scene.hpp>
+#include "scene.hpp"
 #include <SDL2/SDL.h>
 struct SDL_Window;
 #include <cassert>
