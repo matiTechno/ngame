@@ -8,8 +8,11 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3")
 
 file(GLOB_RECURSE headers
     "*.hpp"
-    "*.h")
+    "*.h"
+    "*.sh")
 add_custom_target(headers SOURCES ${headers})
+
+add_definitions(-DGLM_FORCE_NO_CTOR_INIT)
 
 include_directories(./include)
 

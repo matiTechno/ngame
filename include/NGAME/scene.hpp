@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/vec2.hpp>
 #include <memory>
+class Renderer2d;
 struct IO;
 
 class Scene {
@@ -17,7 +18,8 @@ public:
 
 protected:
   const IO& io;
-    glm::ivec2 pos;
+  const Renderer2d& renderer2d;
+  glm::ivec2 pos;
   glm::ivec2 size;
 
   bool update_when_not_top = false;

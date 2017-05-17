@@ -6,6 +6,7 @@ class Del;
 #include <SDL2/SDL.h>
 struct SDL_Window;
 #include <cassert>
+class Renderer2d;
 
 struct IO
 {
@@ -44,6 +45,7 @@ class App
         std::unique_ptr<Del> del_mix_init;
         std::unique_ptr<Del> del_mix_audio;
         IO io;
+        std::unique_ptr<Renderer2d> renderer2d;
         std::vector<std::unique_ptr<Scene>> scenes;
         SDL_Window* win;
         bool should_close;

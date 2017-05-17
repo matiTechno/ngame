@@ -7,6 +7,7 @@
 #include "imgui_impl_sdl_gl3.h"
 #include <NGAME/del.hpp>
 #include <SDL2/SDL_mixer.h>
+#include <NGAME/renderer2d.hpp>
 
 App* App::handle = nullptr;
 
@@ -74,6 +75,10 @@ App::App(int width, int height, const char *title, unsigned int sdl_flags, int m
   del_imgui = std::make_unique<Del>([]() { ImGui_ImplSdlGL3_Shutdown(); });
 
   init_mixer(mixer_flags);
+
+  renderer2d = std::make_unique<Renderer2d>();
+
+  glEnable(GL_BLEND);
 }
 
 void App::run() {

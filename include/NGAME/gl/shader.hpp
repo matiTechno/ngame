@@ -25,7 +25,7 @@ class Shader: public GL_base, public Del
 {
 public:
     Shader(const std::string& filename, bool hot_reload);
-    Shader(const std::string& source, const std::string& id_name);
+    Shader(const std::string& source, const char* id_name);
 
     void bind() const;
 

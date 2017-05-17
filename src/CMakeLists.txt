@@ -11,6 +11,8 @@ set(SOURCE
     shader.cpp
     texture.cpp
     buffers.cpp
+    renderer2d.cpp
+    pp_unit.cpp
     )
 
 add_executable(app ${SOURCE})

@@ -40,7 +40,7 @@ Shader::Shader(const std::string& filename, bool hot_reload):
     make_program(load_source_from_file(filename));
 }
 
-Shader::Shader(const std::string& source, const std::string& id_name):
+Shader::Shader(const std::string& source, const char* id_name):
     Shader()
 {
     this->id_name = id_name;
