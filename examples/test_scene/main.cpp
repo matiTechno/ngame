@@ -10,9 +10,9 @@ class Test: public Scene
 {
 public:
     Test():
-        sample("laser1.mp3"),
-        shader("shader1.sh", true),
-        texture("example.png")
+        sample("res/laser1.mp3"),
+        shader("res/shader1.sh", true),
+        texture("res/example.png")
     {}
 
     void process_input() override

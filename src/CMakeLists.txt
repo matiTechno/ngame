@@ -1,5 +1,4 @@
 set(SOURCE
-    main.cpp
     glad.c
     app.cpp
     imgui.cpp
@@ -15,5 +14,5 @@ set(SOURCE
     pp_unit.cpp
     )
 
-add_executable(app ${SOURCE})
-target_link_libraries(app -lSDL2 -lSDL2_mixer -lstdc++fs)
+add_library(ngame ${SOURCE})
+target_link_libraries(ngame -lSDL2 -lSDL2_mixer -lstdc++fs)

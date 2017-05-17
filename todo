@@ -1,7 +1,7 @@
 opengl wrapper classes: most important *texture && *shader ---- done
-renderer
+renderer --- done for sprites
 font loading
-sprite
+sprite ---- done
 text
 pp_unit
 
