@@ -3,7 +3,7 @@
 GLuint VAO::bound_id = 0;
 
 VAO::VAO():
-    Del([this](){
+    GL_base([](GLuint& id){
     glDeleteVertexArrays(1, &id);
     if(bound_id == id)
         bound_id = 0;
@@ -22,7 +22,7 @@ void VAO::bind() const
 }
 
 BO::BO():
-    Del([this](){
+    GL_base([](GLuint& id){
     glDeleteBuffers(1, &id);
 })
 {
@@ -35,7 +35,7 @@ void BO::bind(GLenum target) const
 }
 
 FBO::FBO():
-    Del([this](){
+    GL_base([](GLuint& id){
     glDeleteFramebuffers(1, &id);
 })
 {
@@ -48,7 +48,7 @@ void FBO::bind(GLenum target) const
 }
 
 RBO::RBO():
-    Del([this](){
+    GL_base([](GLuint& id){
     glDeleteRenderbuffers(1, &id);
 })
 {

@@ -96,10 +96,10 @@ void Renderer2d::render(const Sprite& sprite) const
 {
     if(batches.size())
     {
-        if(sprite.texture != batches.end()->texture)
+        if(sprite.texture != batches.back().texture)
         {
             batches.emplace_back();
-            batches.end()->texture = sprite.texture;
+            batches.back().texture = sprite.texture;
         }
     }
     else

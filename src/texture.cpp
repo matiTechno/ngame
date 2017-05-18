@@ -37,7 +37,7 @@ Texture::Texture(GLenum internal_format, GLsizei width, GLsizei height, GLsizei 
 }
 
 Texture::Texture():
-    Del([this]()
+    GL_base([](GLuint& id)
 {
     glDeleteTextures(1, &id);
     if(bound_id.first == id)
@@ -64,7 +64,7 @@ glm::ivec2 Texture::get_size() const
 }
 
 Sampler::Sampler():
-    Del([this](){
+    GL_base([](GLuint& id){
     glDeleteSamplers(1, &id);
     if(bound_id.first == id)
         bound_id.first = 0;

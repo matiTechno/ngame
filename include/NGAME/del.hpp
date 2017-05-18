@@ -1,32 +1,14 @@
 #pragma once
 #include <functional>
 
-class Del {
+class Del final {
 public:
   template <typename T> Del(T &&func) : func(std::forward<T>(func)) {}
   ~Del() {
-        if(func)
         func(); }
 
-  Del(const Del &) = delete;
-  Del &operator=(Del &) = delete;
-
-  Del(Del&& rhs):
-      func(rhs.func)
-  {
-      rhs.func = nullptr;
-  }
-
-  Del& operator=(Del&& rhs)
-  {
-      if(this != &rhs)
-      {
-      func();
-      func = rhs.func;
-      rhs.func = nullptr;
-      }
-      return *this;
-  }
+    Del(const Del &) = delete;
+    Del &operator=(Del &) = delete;
 
 private:
   std::function<void(void)> func;

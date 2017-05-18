@@ -1,8 +1,7 @@
 #pragma once
 #include "base.hpp"
-#include "../del.hpp"
 
-class VAO: public GL_base, public Del
+class VAO: public GL_base
 {
 public:
     VAO();
@@ -13,7 +12,7 @@ private:
     static GLuint bound_id;
 };
 
-class BO: public GL_base, public Del
+class BO: public GL_base
 {
 public:
     BO();
@@ -21,7 +20,7 @@ public:
     void bind(GLenum target) const;
 };
 
-class FBO: public GL_base, public Del
+class FBO: public GL_base
 {
 public:
     FBO();
@@ -29,7 +28,7 @@ public:
     void bind(GLenum target = GL_FRAMEBUFFER) const;
 };
 
-class RBO: public GL_base, public Del
+class RBO: public GL_base
 {
     RBO();
 

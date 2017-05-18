@@ -1,6 +1,5 @@
 #pragma once
 #include "base.hpp"
-#include "../del.hpp"
 #include <memory>
 #include <string>
 #include <map>
@@ -8,7 +7,7 @@
 
 namespace fs = std::experimental::filesystem;
 
-class Sh_part: public GL_base, public Del
+class Sh_part: public GL_base
 {
 public:
     friend class Shader;
@@ -21,7 +20,7 @@ public:
 // #FRAGMENT
 // #COMPUTE
 
-class Shader: public GL_base, public Del
+class Shader: public GL_base
 {
 public:
     Shader(const std::string& filename, bool hot_reload);

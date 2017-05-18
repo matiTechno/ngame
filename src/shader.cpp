@@ -8,7 +8,7 @@
 GLuint Shader::bound_id = 0;
 
 Shader::Shader():
-    Del([this](){
+    GL_base([](GLuint& id){
     glDeleteProgram(id);
     if(bound_id == id)
         bound_id = 0;
@@ -18,7 +18,7 @@ Shader::Shader():
 }
 
 Sh_part::Sh_part(GLenum sh_type):
-    Del([this]()
+    GL_base([](GLuint& id)
 {
     glDeleteShader(id);
 })

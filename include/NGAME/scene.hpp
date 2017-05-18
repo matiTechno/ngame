@@ -3,6 +3,7 @@
 #include <memory>
 class Renderer2d;
 struct IO;
+class PP_unit;
 
 class Scene {
 public:
@@ -13,12 +14,15 @@ public:
   {}
   virtual void update()
   {}
+  virtual void set_coords()
+  {}
   virtual void render()
   {}
 
 protected:
   const IO& io;
   const Renderer2d& renderer2d;
+  const PP_unit& pp_unit;
   glm::ivec2 pos;
   glm::ivec2 size;
 
