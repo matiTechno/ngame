@@ -1,9 +1,8 @@
 #pragma once
-#include <NGAME/gl/texture.hpp>
+#include "gl/texture.hpp"
 class Shader;
-#include <NGAME/gl/buffers.hpp>
+#include "gl/buffers.hpp"
 #include <glm/vec4.hpp>
-#include <NGAME/gl/shader.hpp>
 
 // typical vertex shader implementation for PP_unit:
 //

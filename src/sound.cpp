@@ -40,7 +40,7 @@ Music::Music(const std::string& filename, int volume)
         channel = Mix_PlayChannel(-1, chunk, 0);
         if(channel == -1)
         {
-            Mix_AllocateChannels(Mix_AllocateChannels(-1) + 1);
+            Mix_AllocateChannels(Mix_AllocateChannels(-1) * 2);
             channel = Mix_PlayChannel(-1, chunk, 0);
             if(channel == -1)
             {

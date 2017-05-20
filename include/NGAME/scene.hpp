@@ -4,18 +4,23 @@
 class Renderer2d;
 struct IO;
 class PP_unit;
+class Font_loader;
 
 class Scene {
 public:
   Scene();
   virtual ~Scene() = default;
 
+  // only when top
   virtual void process_input()
   {}
+  // if top or update_when_not_top
   virtual void update()
   {}
+  // always
   virtual void set_coords()
   {}
+  // only if scenes on top are not opaque
   virtual void render()
   {}
 
@@ -23,6 +28,7 @@ protected:
   const IO& io;
   const Renderer2d& renderer2d;
   const PP_unit& pp_unit;
+  const Font_loader& font_loader;
   glm::ivec2 pos;
   glm::ivec2 size;
 

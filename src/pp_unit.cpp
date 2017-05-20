@@ -1,4 +1,6 @@
 #include <NGAME/pp_unit.hpp>
+#include <NGAME/glad.h>
+#include <NGAME/gl/shader.hpp>
 
 PP_unit::PP_unit(int w, int h):
     texs{Texture(GL_RGBA8, w, h), Texture(GL_RGBA8, w, h)},

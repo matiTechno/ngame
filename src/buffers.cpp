@@ -1,4 +1,5 @@
 #include <NGAME/gl/buffers.hpp>
+#include <NGAME/glad.h>
 
 GLuint VAO::bound_id = 0;
 

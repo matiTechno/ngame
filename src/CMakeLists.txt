@@ -1,17 +1,21 @@
 set(SOURCE
     glad.c
     app.cpp
-    imgui.cpp
-    imgui_demo.cpp
-    imgui_draw.cpp
-    imgui_impl_sdl_gl3.cpp
     scene.cpp
-    sound.cpp
     shader.cpp
     texture.cpp
     buffers.cpp
     renderer2d.cpp
     pp_unit.cpp
+    text.cpp
+    font.cpp
+    imgui.cpp
+    imgui_demo.cpp
+    imgui_draw.cpp
+    imgui_impl_sdl_gl3.cpp
+    sound.cpp
+    sprite.cpp
+    font_loader.cpp
     )
 
 add_library(ngame ${SOURCE})

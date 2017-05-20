@@ -1,6 +1,11 @@
 #pragma once
-#include "../glad.h"
+typedef unsigned int GLuint;
 #include <utility>
+typedef unsigned int GLenum;
+typedef int GLint;
+typedef int GLsizei;
+#define GL_TEXTURE_2D 0x0DE1
+#define GL_FRAMEBUFFER 0x8D40
 
 class GL_base
 {

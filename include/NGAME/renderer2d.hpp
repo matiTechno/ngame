@@ -1,10 +1,11 @@
 #pragma once
-#include <NGAME/gl/buffers.hpp>
-#include <NGAME/gl/texture.hpp>
-#include <NGAME/gl/shader.hpp>
+#include "gl/buffers.hpp"
+#include "gl/texture.hpp"
+#include "gl/shader.hpp"
 class Sprite;
 #include <glm/mat4x4.hpp>
 #include <vector>
+class Text;
 
 enum class Sampl_type
 {
@@ -16,13 +17,19 @@ class Renderer2d
 {
 public:
     Renderer2d();
-                                // projection
-    void flush(const glm::vec2& start, const glm::vec2& range, Sampl_type type = Sampl_type::linear) const;
+
+    void set_projection(const glm::vec2& start, const glm::vec2& range) const;
+
+    // for font rendering sampling is always linear
+    void flush(Sampl_type type = Sampl_type::linear) const;
 
     void render(const Sprite& sprite) const;
 
+    void render(const Text& text) const;
+
 private:
-    Sampler s_linear, s_nearest;
+    Sampler sampl_linear, sampl_nearest;
+    mutable const Sampler* sampl_sprite = &sampl_linear;
     Shader sh_sprite;
     VAO vao;
     BO bo_quad, bo_sprite;
@@ -38,7 +45,15 @@ private:
     struct Batch
     {
         std::vector<Vbo_instance> vbo_data;
-        Texture* texture;
+        const Texture* texture;
+        bool is_sprite;
+    };
+
+    enum Rend_t
+    {
+        sp_no_tex,
+        sp_tex,
+        font
     };
 
     mutable std::vector<Batch> batches;

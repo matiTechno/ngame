@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <NGAME/glad.h>
 
 GLuint Shader::bound_id = 0;
 

@@ -26,5 +26,5 @@ uniform float time;
 void main()
 {
     color = texture(sampl, v_tex_coord) * (sin(time) + 1) / 2
-    * vec4(1, 0.5, 0.5, 1);
+    * vec4(1, 0.5, 0.5, 0.5);
 }

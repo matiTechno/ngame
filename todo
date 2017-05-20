@@ -2,9 +2,15 @@ opengl wrapper classes: most important *texture && *shader ---- done
 renderer --- done for sprites
 font loading
 sprite ---- done
-text
+text ---- done
 pp_unit ---- done
 
 -- now everything will be much better and simpler
 then
 entity component system with mini reflaction and cache friendly mem access
+
+
+font class # ---- done
+text class # ---- done
+renderer2d # ---- done
+remove glad header from some places (huge file) ---- done

@@ -27,7 +27,7 @@ void main()
 
 out vec4 color;
 
-uniform bool is_texture;
+uniform int type;
 uniform sampler2D sampl;
 
 in vec4 v_color;
@@ -35,10 +35,14 @@ in vec2 v_tex_coord;
 
 void main()
 {
-    if(is_texture)
-        color = texture(sampl, v_tex_coord) * v_color;
-    else
+    if(type == 0)
         color = v_color;
+
+    else if(type == 1)
+        color = texture(sampl, v_tex_coord) * v_color;
+
+    else if(type == 2)
+        color = vec4(1, 1, 1, texture(sampl, v_tex_coord).r) * v_color;
 }
 
 )"

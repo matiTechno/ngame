@@ -1,0 +1,14 @@
+#pragma once
+#include <NGAME/gl/shader.hpp>
+#include <NGAME/gl/texture.hpp>
+#include <NGAME/font.hpp>
+#include <NGAME/glad.h>
+#include <NGAME/imgui.h>
+#include <NGAME/pp_unit.hpp>
+#include <NGAME/renderer2d.hpp>
+#include <NGAME/scene.hpp>
+#include <NGAME/sound.hpp>
+#include <NGAME/sprite.hpp>
+#include <NGAME/text.hpp>
+#include <NGAME/font_loader.hpp>
+/// ...

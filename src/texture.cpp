@@ -1,6 +1,8 @@
 #include <NGAME/gl/texture.hpp>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include <NGAME/glad.h>
+#include <stdexcept>
 
 std::pair<GLuint, GLuint> Texture::bound_id{0, 0};
 std::pair<GLuint, GLuint> Sampler::bound_id{0, 0};
@@ -34,6 +36,8 @@ Texture::Texture(GLenum internal_format, GLsizei width, GLsizei height, GLsizei 
 {
     bind();
     glTexStorage2D(GL_TEXTURE_2D, levels, internal_format, width, height);
+    size.x = width;
+    size.y = height;
 }
 
 Texture::Texture():

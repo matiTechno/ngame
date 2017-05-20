@@ -2,14 +2,19 @@
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 class Texture;
+class Text;
 
 class Sprite
 {
 public:
+    Sprite() = default;
+    // set sprite as text bb
+    Sprite(const Text& text);
+
     glm::vec2 pos;
     glm::vec2 size;
     glm::ivec4 tex_coords;
-    Texture* texture = nullptr;
+    const Texture* texture = nullptr;
     // radians
     float rotation = 0.f;
     // relative to sprite top left corner
