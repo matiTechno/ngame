@@ -11,6 +11,8 @@ Renderer2d::Renderer2d():
         #include "shaders/sprite.sh"
         , "sprite.sh")
 {
+    set_default_blending();
+
     sampl_linear.set_parameter_i(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     sampl_linear.set_parameter_i(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     sampl_nearest.set_parameter_i(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -61,6 +63,11 @@ Renderer2d::Renderer2d():
                           reinterpret_cast<const void*>(offsetof(Vbo_instance, model) + 2 * sizeof(glm::vec4)));
     glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vbo_instance),
                           reinterpret_cast<const void*>(offsetof(Vbo_instance, model) + 3 * sizeof(glm::vec4)));
+}
+
+void Renderer2d::set_default_blending() const
+{
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Renderer2d::set_projection(const glm::vec2& start, const glm::vec2& range) const

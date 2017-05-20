@@ -18,6 +18,7 @@ public:
     // radians
     float rotation = 0.f;
     // relative to sprite top left corner
+    // take care when resizing sprite
     glm::vec2 rotation_point;
     glm::vec4 color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 };

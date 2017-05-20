@@ -14,3 +14,10 @@ font class # ---- done
 text class # ---- done
 renderer2d # ---- done
 remove glad header from some places (huge file) ---- done
+renderer2d memory allocation strategy (avoid memory fragmentation with bigger batches etc) @@@@@@@
+test_scene emitter reserve strategy @@@@@@@@
+
+dependencies:
+SDL2
+SDL2_mixer
+GPU with OpenGL 3.3 (or 4.3 maybe) support

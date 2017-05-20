@@ -20,6 +20,8 @@ public:
 
     void set_projection(const glm::vec2& start, const glm::vec2& range) const;
 
+    void set_default_blending() const;
+
     // for font rendering sampling is always linear
     void flush(Sampl_type type = Sampl_type::linear) const;
 

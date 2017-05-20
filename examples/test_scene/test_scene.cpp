@@ -1,12 +1,34 @@
 #include "test_scene.hpp"
 #include <NGAME/common.hpp>
+#include <glm/gtc/constants.hpp>
 
 Test_scene::Test_scene():
     sample("res/laser1.mp3"),
     shader("res/pp_unit.sh", true),
     texture("res/example.png"),
-    font(font_loader.load_font("res/Roboto-Medium.ttf", 100))
-{}
+    font(font_loader.load_font("res/Roboto-Medium.ttf", 100)),
+    emitter(rn_eng)
+{
+    std::random_device rd;
+    rn_eng.seed(rd());
+
+    emitter.spawn_pos = glm::vec2(40.f, 500.f);
+    emitter.spawn_size = glm::vec2(60.f, 100.f);
+    emitter.spawn_time = 0.001f;
+    // ...
+    emitter.size_min = 2.f;
+    emitter.size_max = 8.f;
+    emitter.life_min = 2.f;
+    emitter.life_max = 6.f;
+    emitter.acc_min = glm::vec2(5.f, 3.f);
+    emitter.acc_max = glm::vec2(12.f, 6.f);
+    emitter.vel_min = glm::vec2(0.f, -50.f);
+    emitter.vel_max = glm::vec2(0.f, -200.f);
+    emitter.ang_vel_min = -glm::pi<float>();
+    emitter.ang_vel_max = 0.f;
+    emitter.color_min = glm::vec4(1.f, 0.1f, 0.f, 0.2f);
+    emitter.color_max = glm::vec4(1.f, 0.7f, 0.1f, 0.6f);
+}
 
 void Test_scene::process_input()
 {
@@ -34,11 +56,15 @@ void Test_scene::set_coords()
 
 void Test_scene::render()
 {
+    emitter.update(io.frametime);
+
     ImGui::ShowTestWindow();
     ImGui::Begin("control");
     ImGui::Text("fb_size: %d x %d", io.w, io.h);
     ImGui::Spacing();
     ImGui::Text("frametime(ms): %.3f", io.av_frametime * 1000.f);
+    ImGui::Spacing();
+    ImGui::Text("num particles: %d", emitter.last_active + 1);
     ImGui::Separator();
     ImGui::Spacing();
     if(ImGui::Button("vsync on / off"))
@@ -70,5 +96,89 @@ void Test_scene::render()
         sprite.tex_coords = glm::ivec4(0, 0, texture.get_size());
         renderer2d.render(sprite);
     }
+
+    emitter.render(renderer2d);
+
     renderer2d.flush();
+}
+
+Emitter::Emitter(std::mt19937& rn_eng):
+    rn_eng(rn_eng)
+{
+    particles.reserve(4000);
+}
+
+void Emitter::update(float dt)
+{
+    for(auto i = 0; i < last_active + 1; ++i)
+    {
+        particles[i].life -= dt;
+        if(particles[i].life <= 0.f)
+            kill(i); // care: swap
+
+        particles[i].pos += particles[i].acc * dt * dt / 0.5f + particles[i].vel * dt;
+        particles[i].vel += particles[i].acc * dt;
+        particles[i].rotation += particles[i].ang_vel * dt;
+    }
+
+    accumulator += dt;
+    while(accumulator > spawn_time)
+    {
+        spawn();
+        accumulator -= spawn_time;
+    }
+}
+
+void Emitter::render(const Renderer2d& renderer) const
+{
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    for(auto i = 0; i < last_active + 1; ++i)
+        renderer.render(particles[i]);
+    renderer.flush();
+    renderer.set_default_blending();
+}
+
+void Emitter::spawn()
+{
+    ++last_active;
+
+    if(last_active == int(particles.size())) // cast to clear warning
+        particles.emplace_back();
+
+    auto& p = particles[last_active];
+
+    // pos
+    std::uniform_real_distribution<float> dist_pos(0.f, 1.f);
+    p.pos = spawn_pos + glm::vec2(dist_pos(rn_eng) * spawn_size.x, dist_pos(rn_eng) * spawn_size.y);
+    // size
+    std::uniform_real_distribution<float> dist_size(size_min, size_max);
+    p.size = glm::vec2(dist_size(rn_eng));
+    // color
+    std::uniform_real_distribution<float> dist_r(color_min.x, color_max.x);
+    std::uniform_real_distribution<float> dist_g(color_min.y, color_max.y);
+    std::uniform_real_distribution<float> dist_b(color_min.z, color_max.z);
+    std::uniform_real_distribution<float> dist_a(color_min.w, color_max.w);
+    p.color = glm::vec4(dist_r(rn_eng), dist_g(rn_eng), dist_b(rn_eng), dist_a(rn_eng));
+    // rotation_point
+    p.rotation_point = p.size / 2.f;
+    // life
+    std::uniform_real_distribution<float> dist_life(life_min, life_max);
+    p.life = dist_life(rn_eng);
+    // vel
+    std::uniform_real_distribution<float> dist_vel_x(vel_min.x, vel_max.x);
+    std::uniform_real_distribution<float> dist_vel_y(vel_min.y, vel_max.y);
+    p.vel = glm::vec2(dist_vel_x(rn_eng), dist_vel_y(rn_eng));
+    // acc
+    std::uniform_real_distribution<float> dist_acc_x(acc_min.x, acc_max.x);
+    std::uniform_real_distribution<float> dist_acc_y(acc_min.y, acc_max.y);
+    p.acc = glm::vec2(dist_acc_x(rn_eng), dist_acc_y(rn_eng));
+    // ang_vel
+    std::uniform_real_distribution<float> dist_ang_vel(ang_vel_min, ang_vel_max);
+    p.ang_vel = dist_ang_vel(rn_eng);
+}
+
+void Emitter::kill(int index)
+{
+    std::swap(particles[index], particles[last_active]);
+    --last_active;
 }

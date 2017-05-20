@@ -20,6 +20,8 @@ struct IO
     int w, h;
 };
 
+// care:
+// allocated mixer channels = 100
 class App
 {
 public:

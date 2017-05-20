@@ -83,7 +83,6 @@ App::App(int width, int height, const char *title, unsigned int sdl_flags, int m
     font_loader = std::make_unique<Font_loader>();
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void App::run() {
