@@ -37,14 +37,13 @@ void PP_unit::start() const
     assert(has_finished);
     has_finished = false;
 
-    glScissor(0, 0, w, h);
-
     for(auto i = 0; i < 2; ++i)
     {
         fbos[i].bind();
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
+    glEnable(GL_SCISSOR_TEST);
     glScissor(scene_gl_coords.x, scene_gl_coords.y, scene_gl_coords.z, scene_gl_coords.w);
 
     bound_fbo = 1;
@@ -75,6 +74,9 @@ void PP_unit::render(bool end, const Shader& shader) const
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glViewport(scene_gl_coords.x, scene_gl_coords.y, scene_gl_coords.z, scene_gl_coords.w);
+
+    if(end)
+        glDisable(GL_SCISSOR_TEST);
 }
 
 void PP_unit::set_new_size(int w, int h)

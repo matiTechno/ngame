@@ -84,7 +84,6 @@ App::App(int width, int height, const char *title, unsigned int sdl_flags, int m
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_SCISSOR_TEST);
 }
 
 void App::run() {
@@ -140,7 +139,6 @@ void App::process_input() {
 void App::render() {
 
     pp_unit->set_new_size(io.w, io.h);
-    glScissor(0, 0, io.w, io.h);
     glClear(GL_COLOR_BUFFER_BIT);
 
     for(auto it = scenes.rbegin(); it != scenes.rend(); ++ it)
@@ -156,7 +154,6 @@ void App::render() {
 
         glm::ivec4 scene_gl_coords(scene.pos.x, io.h - (scene.pos.y + scene.size.y), scene.size.x, scene.size.y);
         glViewport(scene_gl_coords.x, scene_gl_coords.y, scene_gl_coords.z, scene_gl_coords.w);
-        glScissor(scene_gl_coords.x, scene_gl_coords.y, scene_gl_coords.z, scene_gl_coords.w);
         pp_unit->set_scene(scene_gl_coords);
 
         scene.render();
