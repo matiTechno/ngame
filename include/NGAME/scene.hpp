@@ -6,6 +6,7 @@ struct IO;
 class PP_unit;
 class Font_loader;
 
+// virtual functions execute in the same order as presented
 class Scene {
 public:
   Scene();
@@ -45,7 +46,7 @@ protected:
   bool is_top() const
   {return is_top_b;}
 
-  void exit()
+  void quit()
   {
       should_close = true;
   }

@@ -11,4 +11,4 @@
 #include <NGAME/sprite.hpp>
 #include <NGAME/text.hpp>
 #include <NGAME/font_loader.hpp>
-/// ...
+#include <NGAME/app.hpp>
