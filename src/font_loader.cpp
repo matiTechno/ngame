@@ -23,7 +23,7 @@ Font Font_loader::load_font(const std::string& filename, int size_px) const
     int tex_height = 0;
 
     int max_bm_h = 0;
-    glm::vec2 pos(0.f);
+    glm::ivec2 pos(0.f);
     for(auto i = 32; i < 127; ++i)
     {
         auto id = stbtt_FindGlyphIndex(&fontinfo, i);

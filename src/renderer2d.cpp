@@ -102,8 +102,8 @@ void Renderer2d::flush(Sampl_type type) const
             }
             else
             {
-                 glUniform1i(sh_sprite.get_uni_location("type"), Rend_t::font);
-                 sampl_linear.bind();
+                glUniform1i(sh_sprite.get_uni_location("type"), Rend_t::font);
+                sampl_linear.bind();
             }
         }
         else
@@ -133,7 +133,7 @@ void Renderer2d::render(const Sprite& sprite) const
     }
     else
     {
-        add_batch:
+add_batch:
         batches.emplace_back(start, 0, sprite.texture, true);
     }
 
@@ -177,7 +177,7 @@ void Renderer2d::render(const Text& text) const
     }
     else
     {
-        add_batch:
+add_batch:
         batches.emplace_back(start, 0, &text.font->get_atlas(), false);
     }
 

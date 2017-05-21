@@ -48,7 +48,7 @@ Texture::Texture():
         bound_id.first = 0;
 })
 {
-    glGenTextures(1, &id);
+glGenTextures(1, &id);
 }
 
 void Texture::bind(GLenum target, GLuint unit) const
@@ -74,7 +74,7 @@ Sampler::Sampler():
         bound_id.first = 0;
 })
 {
-    glGenSamplers(1, &id);
+glGenSamplers(1, &id);
 }
 void Sampler::bind(GLuint unit) const
 {

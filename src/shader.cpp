@@ -15,7 +15,7 @@ Shader::Shader():
         bound_id = 0;
 })
 {
-    id = glCreateProgram();
+id = glCreateProgram();
 }
 
 Sh_part::Sh_part(GLenum sh_type):
@@ -24,7 +24,7 @@ Sh_part::Sh_part(GLenum sh_type):
     glDeleteShader(id);
 })
 {
-    id = glCreateShader(sh_type);
+id = glCreateShader(sh_type);
 }
 
 Shader::Shader(const std::string& filename, bool hot_reload):

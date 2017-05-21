@@ -16,8 +16,8 @@ renderer2d # ---- done
 remove glad header from some places (huge file) ---- done
 renderer2d memory allocation strategy (avoid memory fragmentation with bigger batches etc) ---- done
 test_scene emitter reserve strategy ---- done
-
-improve compilation time
+improve compilation time ---- nvm it's fine. (compiling with optimization enabled takes much more time, and I didn't know it'
+clean codebase
 
 dependencies:
 SDL2

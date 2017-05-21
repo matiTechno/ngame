@@ -40,7 +40,7 @@ private:
     struct Vbo_instance
     {
         glm::vec4 color;
-                  // pos + size
+        // pos + size
         glm::vec4 tex_coords;
         glm::mat4 model;
     };
