@@ -28,6 +28,8 @@ Test_scene::Test_scene():
     emitter.ang_vel_max = 0.f;
     emitter.color_min = glm::vec4(1.f, 0.1f, 0.f, 0.2f);
     emitter.color_max = glm::vec4(1.f, 0.7f, 0.1f, 0.6f);
+    // ...
+    emitter.reserve(1.f / emitter.spawn_time * emitter.life_max);
 }
 
 void Test_scene::process_input()
@@ -104,9 +106,7 @@ void Test_scene::render()
 
 Emitter::Emitter(std::mt19937& rn_eng):
     rn_eng(rn_eng)
-{
-    particles.reserve(4000);
-}
+{}
 
 void Emitter::update(float dt)
 {
@@ -131,6 +131,7 @@ void Emitter::update(float dt)
 
 void Emitter::render(const Renderer2d& renderer) const
 {
+    renderer.flush();
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     for(auto i = 0; i < last_active + 1; ++i)
         renderer.render(particles[i]);
@@ -181,4 +182,9 @@ void Emitter::kill(int index)
 {
     std::swap(particles[index], particles[last_active]);
     --last_active;
+}
+
+void Emitter::reserve(std::size_t num)
+{
+    particles.reserve(num);
 }

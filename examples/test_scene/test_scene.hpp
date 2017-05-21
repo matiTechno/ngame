@@ -9,13 +9,13 @@
 #include <vector>
 #include <NGAME/sprite.hpp>
 #include <random>
-
 class Emitter
 {
 public:
     friend class Test_scene;
     Emitter(std::mt19937& rn_eng);
 
+    void reserve(std::size_t num);
     void update(float dt);
     void render(const Renderer2d& renderer) const;
 

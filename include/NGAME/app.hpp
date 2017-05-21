@@ -20,8 +20,10 @@ struct IO
     int w, h;
 };
 
-// care:
+// some fixed values:
 // allocated mixer channels = 100
+// Renderer2d batches reserve = 50
+// Renderer2d size of instance array (2017-05-21 --- 100k)
 class App
 {
 public:

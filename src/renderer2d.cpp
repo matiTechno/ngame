@@ -11,6 +11,7 @@ Renderer2d::Renderer2d():
         #include "shaders/sprite.sh"
         , "sprite.sh")
 {
+    batches.reserve(50);
     set_default_blending();
 
     sampl_linear.set_parameter_i(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -109,10 +110,11 @@ void Renderer2d::flush(Sampl_type type) const
             glUniform1i(sh_sprite.get_uni_location("type"), Rend_t::sp_no_tex);
 
         bo_sprite.bind(GL_ARRAY_BUFFER);
-        glBufferData(GL_ARRAY_BUFFER, batch.vbo_data.size() * sizeof(Vbo_instance), batch.vbo_data.data(), GL_STREAM_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, batch.size * sizeof(Vbo_instance),
+                     &instances[batch.start], GL_STREAM_DRAW);
 
         vao.bind();
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, batch.vbo_data.size());
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, batch.size);
     }
 
     batches.clear();
@@ -120,20 +122,26 @@ void Renderer2d::flush(Sampl_type type) const
 
 void Renderer2d::render(const Sprite& sprite) const
 {
+    std::size_t start = 0;
+
     if(batches.size())
     {
+        start = batches.back().start + batches.back().size;
+
         if(sprite.texture != batches.back().texture || batches.back().is_sprite == false)
             goto add_batch;
     }
     else
     {
         add_batch:
-        batches.emplace_back();
-        batches.back().texture = sprite.texture;
-        batches.back().is_sprite = true;
+        batches.emplace_back(start, 0, sprite.texture, true);
     }
 
-    Vbo_instance inst;
+    ++batches.back().size;
+    auto id = batches.back().start + batches.back().size - 1;
+    assert(id < instances.size() - 1);
+    auto& inst = instances[id];
+
     inst.color = sprite.color;
 
     glm::mat4 model(1.f);
@@ -145,7 +153,7 @@ void Renderer2d::render(const Sprite& sprite) const
         model = glm::translate(model, glm::vec3(-sprite.rotation_point, 0.f));
     }
     model = glm::scale(model, glm::vec3(sprite.size, 1.f));
-    inst.model = std::move(model);
+    inst.model = model;
 
     if(sprite.texture)
     {
@@ -154,23 +162,23 @@ void Renderer2d::render(const Sprite& sprite) const
         inst.tex_coords.z = float(sprite.tex_coords.z) / sprite.texture->get_size().x;
         inst.tex_coords.w = float(sprite.tex_coords.w) / sprite.texture->get_size().y;
     }
-
-    batches.back().vbo_data.push_back(std::move(inst));
 }
 
 void Renderer2d::render(const Text& text) const
 {
+    std::size_t start = 0;
+
     if(batches.size())
     {
+        start = batches.back().start + batches.back().size;
+
         if(&text.font->get_atlas() != batches.back().texture || batches.back().is_sprite)
             goto add_batch;
     }
     else
     {
         add_batch:
-        batches.emplace_back();
-        batches.back().texture = &text.font->get_atlas();
-        batches.back().is_sprite = false;
+        batches.emplace_back(start, 0, &text.font->get_atlas(), false);
     }
 
     glm::vec2 pen_pos;
@@ -187,7 +195,12 @@ void Renderer2d::render(const Text& text) const
             pen_pos.y += text.font->get_new_line_space() * text.scale;
             continue;
         }
-        Vbo_instance inst;
+
+        ++batches.back().size;
+        auto id = batches.back().start + batches.back().size - 1;
+        assert(id < instances.size() - 1);
+        auto& inst = instances[id];
+
         inst.color = text.color;
 
         auto& glyph = text.font->get_glyph(c);
@@ -204,14 +217,12 @@ void Renderer2d::render(const Text& text) const
             model = glm::translate(model, glm::vec3(-text.rotation_point + (glyph_pos - text.pos), 0.f));
         }
         model = glm::scale(model, glm::vec3(glyph_size, 1.f));
-        inst.model = std::move(model);
+        inst.model = model;
 
         inst.tex_coords.x = float(glyph.tex_coords.x) / text.font->get_atlas().get_size().x;
         inst.tex_coords.y = float(glyph.tex_coords.y) / text.font->get_atlas().get_size().y;
         inst.tex_coords.z = float(glyph.tex_coords.z) / text.font->get_atlas().get_size().x;
         inst.tex_coords.w = float(glyph.tex_coords.w) / text.font->get_atlas().get_size().y;
-
-        batches.back().vbo_data.push_back(std::move(inst));
 
         pen_pos.x += glyph.advance * text.scale;
     }

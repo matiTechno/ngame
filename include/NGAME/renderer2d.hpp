@@ -6,6 +6,7 @@ class Sprite;
 #include <glm/mat4x4.hpp>
 #include <vector>
 class Text;
+#include <array>
 
 enum class Sampl_type
 {
@@ -46,7 +47,14 @@ private:
 
     struct Batch
     {
-        std::vector<Vbo_instance> vbo_data;
+        Batch(std::size_t start, std::size_t size, const Texture* texture, bool is_sprite):
+            start(start),
+            size(size),
+            texture(texture),
+            is_sprite(is_sprite)
+        {}
+
+        std::size_t start, size;
         const Texture* texture;
         bool is_sprite;
     };
@@ -59,4 +67,5 @@ private:
     };
 
     mutable std::vector<Batch> batches;
+    mutable std::array<Vbo_instance, 100000> instances;
 };
