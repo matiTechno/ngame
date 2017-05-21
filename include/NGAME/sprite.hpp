@@ -8,7 +8,7 @@ class Sprite
 {
 public:
     Sprite() = default;
-    // set sprite as text bb
+    // set sprite as text bbox
     Sprite(const Text& text);
 
     glm::vec2 pos;

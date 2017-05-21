@@ -192,7 +192,7 @@ void Renderer2d::render(const Text& text) const
         if(c == '\n')
         {
             pen_pos.x = text.pos.x;
-            pen_pos.y += text.font->get_new_line_space() * text.scale;
+            pen_pos.y += text.font->get_linespace() * text.scale;
             continue;
         }
 

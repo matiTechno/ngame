@@ -1,16 +1,16 @@
 #include <NGAME/font.hpp>
 
-Font::Font(std::map<char, Glyph>&& glyphs, Texture&& atlas,
-           int size_px, int new_line_space, int max_bearing_y, int max_below_baseline):
+Font::Font(std::map<int, Glyph>&& glyphs, Texture&& atlas,
+           int size_px, int linespace, int ascent, int descent):
     glyphs(std::move(glyphs)),
     atlas(std::move(atlas)),
     size_px(size_px),
-    new_line_space(new_line_space),
-    max_bearing_y(max_bearing_y),
-    max_below_baseline(max_below_baseline)
+    linespace(linespace),
+    ascent(ascent),
+    descent(descent)
 {}
 
-const Glyph& Font::get_glyph(char code) const
+const Glyph& Font::get_glyph(int code) const
 {
     auto it = glyphs.find(code);
     if(it != glyphs.end())
@@ -29,17 +29,17 @@ int Font::get_size_px() const
     return size_px;
 }
 
-int Font::get_new_line_space() const
+int Font::get_linespace() const
 {
-    return new_line_space;
+    return linespace;
 }
 
-int Font::get_max_bearing_y() const
+int Font::get_ascent() const
 {
-    return max_bearing_y;
+    return ascent;
 }
 
-int Font::get_max_below_baseline() const
+int Font::get_descent() const
 {
-    return max_below_baseline;
+    return descent;
 }

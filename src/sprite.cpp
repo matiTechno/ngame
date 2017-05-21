@@ -4,7 +4,7 @@
 Sprite::Sprite(const Text& text):
     rotation(text.rotation)
 {
-    auto bb = text.get_bb();
+    auto bb = text.get_bbox();
     pos.x = bb.x;
     pos.y = bb.y;
     size.x = bb.z;

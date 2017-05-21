@@ -23,7 +23,8 @@ struct IO
 // some fixed values:
 // allocated mixer channels = 100
 // Renderer2d batches reserve = 50
-// Renderer2d size of instance array (2017-05-21 --- 100k)
+// Renderer2d size of instance array = 100K
+// atlas width in load_font() = 1024;
 class App
 {
 public:

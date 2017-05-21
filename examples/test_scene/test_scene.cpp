@@ -6,7 +6,7 @@ Test_scene::Test_scene():
     sample("res/laser1.mp3"),
     shader("res/pp_unit.sh", true),
     texture("res/example.png"),
-    font(font_loader.load_font("res/Roboto-Medium.ttf", 100)),
+    font(font_loader.load_font("res/Roboto-Medium.ttf", 60)),
     emitter(rn_eng)
 {
     std::random_device rd;
@@ -100,6 +100,16 @@ void Test_scene::render()
     }
 
     emitter.render(renderer2d);
+
+    {
+        Text text(font);
+        text.text = "Hello Sailor!\nWhoa.";
+        text.pos = glm::vec2(200.f, 100.f);
+        Sprite sprite(text);
+        sprite.color.a = 0.2f;
+        renderer2d.render(text);
+        renderer2d.render(sprite);
+    }
 
     renderer2d.flush();
 }

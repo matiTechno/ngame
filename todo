@@ -1,6 +1,6 @@
 opengl wrapper classes: most important *texture && *shader ---- done
 renderer --- done
-font loading with stbtt @@@@@@@@@@@@
+font loading with stbtt ---- done
 sprite ---- done
 text ---- done
 pp_unit ---- done
@@ -14,10 +14,18 @@ font class # ---- done
 text class # ---- done
 renderer2d # ---- done
 remove glad header from some places (huge file) ---- done
-renderer2d memory allocation strategy (avoid memory fragmentation with bigger batches etc) @@@@@@@
-test_scene emitter reserve strategy @@@@@@@@
+renderer2d memory allocation strategy (avoid memory fragmentation with bigger batches etc) ---- done
+test_scene emitter reserve strategy ---- done
+
+improve compilation time
 
 dependencies:
 SDL2
 SDL2_mixer
+glm
 GPU with OpenGL 3.3 (or 4.3 maybe) support
+
+internal:
+stb
+imgui
+glad
