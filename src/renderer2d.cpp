@@ -183,7 +183,7 @@ add_batch:
 
     glm::vec2 pen_pos;
     if(text.rotation == 0.f && text.scale == 1.f && text.snap_to_grid)
-        pen_pos = glm::ivec2(text.pos + 0.5f);
+        pen_pos = glm::ivec2(text.pos);
     else
         pen_pos = text.pos;
 
