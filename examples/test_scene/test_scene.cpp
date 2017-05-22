@@ -14,12 +14,12 @@ Test_scene::Test_scene():
     std::random_device rd;
     rn_eng.seed(rd());
 
-    emitter.spawn_pos = glm::vec2(40.f, 500.f);
-    emitter.spawn_size = glm::vec2(60.f, 100.f);
-    emitter.spawn_time = 0.001f;
+    emitter.spawn_pos = glm::vec2(40.f, 600.f);
+    emitter.spawn_size = glm::vec2(600.f, 100.f);
+    emitter.spawn_time = 0.00005f;
     // ...
-    emitter.size_min = 2.f;
-    emitter.size_max = 8.f;
+    emitter.size_min = 1.f;
+    emitter.size_max = 3.f;
     emitter.life_min = 2.f;
     emitter.life_max = 6.f;
     emitter.acc_min = glm::vec2(5.f, 3.f);
