@@ -13,6 +13,8 @@ class Font_loader;
 
 struct IO
 {
+    IO()
+    {events.reserve(20);}
     std::vector<SDL_Event> events;
     float frametime;
     float av_frametime;
@@ -21,10 +23,12 @@ struct IO
 };
 
 // some fixed values:
-// allocated mixer channels = 100
-// Renderer2d batches reserve = 50
-// Renderer2d size of instance array = 100K
-// atlas width in load_font() = 1024;
+// allocated mixer channels
+// Renderer2d batches reserve
+// Renderer2d size of instance array
+// atlas width in load_font()
+// scenes_to_render reserve
+// IO events reserve
 class App
 {
 public:
@@ -34,7 +38,7 @@ public:
     ~App();
 
     template<typename T, typename ...Args>
-    void start(Args... args)
+    void start(Args&&... args)
     {
         assert(!should_close);
 
@@ -59,6 +63,7 @@ private:
     std::vector<std::unique_ptr<Scene>> scenes;
     SDL_Window* win;
     mutable bool should_close = false;
+    std::vector<Scene*> scenes_to_render;
 
     void init_mixer(int mixer_flags);
 

@@ -62,11 +62,13 @@ void PP_unit::render(bool end, const Shader& shader) const
 
     if(end)
     {
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         has_finished = true;
     }
     else
     {
+        glDisable(GL_BLEND);
         bound_fbo = !bound_fbo;
         fbos[bound_fbo].bind();
     }
@@ -76,7 +78,12 @@ void PP_unit::render(bool end, const Shader& shader) const
     glViewport(scene_gl_coords.x, scene_gl_coords.y, scene_gl_coords.z, scene_gl_coords.w);
 
     if(end)
+    {
         glDisable(GL_SCISSOR_TEST);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    else
+        glEnable(GL_BLEND);
 }
 
 void PP_unit::set_new_size(int w, int h)

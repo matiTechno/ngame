@@ -164,6 +164,51 @@ add_batch:
     }
 }
 
+void Renderer2d::render(const glm::vec2& pos, const glm::vec2& size, const glm::ivec4& tex_coords, const Texture* texture,
+                        float rotation, const glm::vec2& rotation_point, const glm::vec4& color) const
+{
+    std::size_t start = 0;
+
+    if(batches.size())
+    {
+        start = batches.back().start + batches.back().size;
+
+        if(texture != batches.back().texture || batches.back().is_sprite == false)
+            goto add_batch;
+    }
+    else
+    {
+add_batch:
+        batches.emplace_back(start, 0, texture, true);
+    }
+
+    ++batches.back().size;
+    auto id = batches.back().start + batches.back().size - 1;
+    assert(id < instances.size() - 1);
+    auto& inst = instances[id];
+
+    inst.color = color;
+
+    glm::mat4 model(1.f);
+    model = glm::translate(model, glm::vec3(pos, 0.f));
+    if(rotation != 0.f)
+    {
+        model = glm::translate(model, glm::vec3(rotation_point, 0.f));
+        model = glm::rotate(model, rotation, glm::vec3(0.f, 0.f, -1.f));
+        model = glm::translate(model, glm::vec3(-rotation_point, 0.f));
+    }
+    model = glm::scale(model, glm::vec3(size, 1.f));
+    inst.model = model;
+
+    if(texture)
+    {
+        inst.tex_coords.x = float(tex_coords.x) / texture->get_size().x;
+        inst.tex_coords.y = float(tex_coords.y) / texture->get_size().y;
+        inst.tex_coords.z = float(tex_coords.z) / texture->get_size().x;
+        inst.tex_coords.w = float(tex_coords.w) / texture->get_size().y;
+    }
+}
+
 void Renderer2d::render(const Text& text) const
 {
     std::size_t start = 0;

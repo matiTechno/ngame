@@ -7,10 +7,10 @@ Text::Text(const Font& font):
     font(&font)
 {}
 
-glm::vec4 Text::get_bbox() const
+glm::vec2 Text::get_size() const
 {
     if(text.size() == 0)
-        return glm::vec4();
+        return glm::vec2(0.f);
 
     auto num_lines = std::count(text.begin(), text.end(), '\n') + 1;
     std::vector<float> widths;
@@ -32,7 +32,12 @@ glm::vec4 Text::get_bbox() const
         }
     }
     auto max_width = std::max_element(widths.begin(), widths.end());
-    return glm::vec4(pos.x, pos.y - font->get_ascent() * scale, *max_width, height);
+    return glm::vec2(*max_width, height);
+}
+
+glm::vec4 Text::get_bbox() const
+{
+    return glm::vec4(pos.x, pos.y - font->get_ascent() * scale, get_size());
 }
 
 void Text::set_pixel_size(int size)

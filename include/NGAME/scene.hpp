@@ -38,7 +38,7 @@ protected:
     int scenes_to_pop = 0;
 
     template<typename T, typename ...Args>
-    void set_new_scene(Args...args)
+    void set_new_scene(Args&&...args)
     {
         new_scene = std::make_unique<T>(std::forward<Args>(args)...);
     }

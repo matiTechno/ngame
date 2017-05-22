@@ -83,6 +83,8 @@ App::App(int width, int height, const char *title, unsigned int sdl_flags, int m
     font_loader = std::make_unique<Font_loader>();
 
     glEnable(GL_BLEND);
+
+    scenes_to_render.reserve(10);
 }
 
 void App::run() {
@@ -122,6 +124,13 @@ void App::process_input() {
     io.events.clear();
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
+        if(event.type == SDL_QUIT)
+        {
+            // temporary for convenience
+            should_close = true;
+            continue;
+        }
+
         io.events.push_back(event);
 
         ImGui_ImplSdlGL3_ProcessEvent(&event);
@@ -140,7 +149,15 @@ void App::render() {
     pp_unit->set_new_size(io.w, io.h);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    for(auto it = scenes.rbegin(); it != scenes.rend(); ++ it)
+    scenes_to_render.clear();
+    for(auto it = scenes.rbegin(); it != scenes.rend(); ++it)
+    {
+        scenes_to_render.push_back(&**it);
+        if((*it)->is_opaque)
+            break;
+    }
+
+    for(auto it = scenes_to_render.rbegin(); it != scenes_to_render.rend(); ++it)
     {
         auto& scene = **it;
 
@@ -156,8 +173,6 @@ void App::render() {
         pp_unit->set_scene(scene_gl_coords);
 
         scene.render();
-        if(scene.is_opaque)
-            break;
     }
 
     ImGui::Render();

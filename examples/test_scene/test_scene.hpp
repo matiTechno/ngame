@@ -58,6 +58,8 @@ public:
 
     void process_input() override;
 
+    void update() override;
+
     void set_coords() override;
 
     void render() override;

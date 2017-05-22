@@ -30,6 +30,10 @@ public:
 
     void render(const Text& text) const;
 
+    // to support SOA
+    void render(const glm::vec2& pos, const glm::vec2& size, const glm::ivec4& tex_coords, const Texture* texture,
+                float rotation, const glm::vec2& rotation_point, const glm::vec4& color) const;
+
 private:
     Sampler sampl_linear, sampl_nearest;
     mutable const Sampler* sampl_sprite = &sampl_linear;

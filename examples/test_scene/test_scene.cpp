@@ -1,6 +1,7 @@
 #include "test_scene.hpp"
 #include <NGAME/common.hpp>
 #include <glm/gtc/constants.hpp>
+#include "menu.hpp"
 
 Test_scene::Test_scene():
     sample("res/laser1.mp3"),
@@ -36,18 +37,20 @@ void Test_scene::process_input()
 {
     for(auto& event: io.events)
     {
-        if(event.type == SDL_QUIT)
-            quit();
-
         if(io.imgui_wants_input)
             return;
 
         if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
-            quit();
+            set_new_scene<Menu>(font);
 
         else if(event.type == SDL_KEYDOWN && !event.key.repeat && event.key.keysym.sym == SDLK_p)
             sample.play();
     }
+}
+
+void Test_scene::update()
+{
+    emitter.update(io.frametime);
 }
 
 void Test_scene::set_coords()
@@ -58,8 +61,6 @@ void Test_scene::set_coords()
 
 void Test_scene::render()
 {
-    emitter.update(io.frametime);
-
     ImGui::ShowTestWindow();
     ImGui::Begin("control");
     ImGui::Text("fb_size: %d x %d", io.w, io.h);
@@ -82,6 +83,7 @@ void Test_scene::render()
         Sprite sprite;
         sprite.pos = glm::vec2(0.f);
         sprite.size = size;
+        sprite.color.a = 0.5f;
         renderer2d.render(sprite);
         renderer2d.flush();
 
@@ -111,6 +113,9 @@ void Test_scene::render()
         renderer2d.render(sprite);
     }
 
+    renderer2d.render(glm::vec2(500.f, 30.f), glm::vec2(20.f), glm::ivec4(), nullptr,
+                      0.f, glm::vec2(), glm::vec4(1.f, 0.f, 0.f, 1.f));
+
     renderer2d.flush();
 }
 
@@ -132,6 +137,8 @@ void Emitter::update(float dt)
     }
 
     accumulator += dt;
+    if(accumulator > 0.020)
+        accumulator = 0.020;
     while(accumulator > spawn_time)
     {
         spawn();

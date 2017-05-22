@@ -10,6 +10,7 @@ public:
     Text(const Font& font);
 
     // pos + size
+    glm::vec2 get_size() const;
     glm::vec4 get_bbox() const;
     void set_pixel_size(int size);
 
