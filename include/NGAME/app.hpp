@@ -29,6 +29,11 @@ struct IO
 // atlas width in load_font()
 // scenes_to_render reserve
 // IO events reserve
+
+// important:
+// to change blend function use Blend class
+// to make glBlend functions visible define NGAME_BLEND
+// befor including NGAME/glad.h
 class App
 {
 public:

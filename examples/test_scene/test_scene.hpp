@@ -73,4 +73,5 @@ private:
     Font font;
     std::mt19937 rn_eng;
     Emitter emitter;
+    Shader sh_wave;
 };

@@ -8,7 +8,8 @@ Test_scene::Test_scene():
     shader("res/pp_unit.sh", true),
     texture("res/example.png"),
     font(font_loader.load_font("res/Roboto-Medium.ttf", 60)),
-    emitter(rn_eng)
+    emitter(rn_eng),
+    sh_wave("res/wave.sh", true)
 {
     std::random_device rd;
     rn_eng.seed(rd());
@@ -41,7 +42,7 @@ void Test_scene::process_input()
             return;
 
         if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
-            set_new_scene<Menu>(font);
+            set_new_scene<Menu>(font, sh_wave);
 
         else if(event.type == SDL_KEYDOWN && !event.key.repeat && event.key.keysym.sym == SDLK_p)
             sample.play();
@@ -83,7 +84,7 @@ void Test_scene::render()
         Sprite sprite;
         sprite.pos = glm::vec2(0.f);
         sprite.size = size;
-        sprite.color.a = 0.5f;
+        sprite.color.a = 0.3f;
         renderer2d.render(sprite);
         renderer2d.flush();
 
@@ -99,6 +100,7 @@ void Test_scene::render()
         sprite.texture = &texture;
         sprite.tex_coords = glm::ivec4(0, 0, texture.get_size());
         renderer2d.render(sprite);
+        renderer2d.flush();
     }
 
     emitter.render(renderer2d);
@@ -112,9 +114,6 @@ void Test_scene::render()
         renderer2d.render(text);
         renderer2d.render(sprite);
     }
-
-    renderer2d.render(glm::vec2(500.f, 30.f), glm::vec2(20.f), glm::ivec4(), nullptr,
-                      0.f, glm::vec2(), glm::vec4(1.f, 0.f, 0.f, 1.f));
 
     renderer2d.flush();
 }
@@ -149,11 +148,11 @@ void Emitter::update(float dt)
 void Emitter::render(const Renderer2d& renderer) const
 {
     renderer.flush();
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    Blend::set(GL_SRC_ALPHA, GL_ONE);
     for(auto i = 0; i < last_active + 1; ++i)
         renderer.render(particles[i]);
     renderer.flush();
-    renderer.set_default_blending();
+    Blend::set_default();
 }
 
 void Emitter::spawn()

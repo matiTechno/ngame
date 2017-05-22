@@ -12,3 +12,4 @@
 #include <NGAME/text.hpp>
 #include <NGAME/font_loader.hpp>
 #include <NGAME/app.hpp>
+#include <NGAME/blend.hpp>

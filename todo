@@ -18,6 +18,7 @@ renderer2d memory allocation strategy (avoid memory fragmentation with bigger ba
 test_scene emitter reserve strategy ---- done
 improve compilation time ---- nvm it's fine (compiling with optimizations enabled takes much more time and I didn't know it)
 clean codebase ---- done
+fixe some pp_unit bugs ---- done
 
 dependencies:
 SDL2

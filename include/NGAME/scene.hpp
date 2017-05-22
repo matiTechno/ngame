@@ -51,6 +51,11 @@ protected:
         should_close = true;
     }
 
+    // pos.y in opengl coordinates
+    // useful when sending pos
+    // to postprocessing shader
+    int get_gl_y() const;
+
 private:
     friend class App;
 

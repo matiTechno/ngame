@@ -11,6 +11,7 @@
 #include <NGAME/scene.hpp>
 #include <NGAME/del.hpp>
 #include <NGAME/font_loader.hpp>
+#include <NGAME/blend.hpp>
 
 const App* App::handle = nullptr;
 
@@ -83,6 +84,7 @@ App::App(int width, int height, const char *title, unsigned int sdl_flags, int m
     font_loader = std::make_unique<Font_loader>();
 
     glEnable(GL_BLEND);
+    Blend::set_default();
 
     scenes_to_render.reserve(10);
 }
@@ -168,7 +170,7 @@ void App::render() {
 
         scene.set_coords();
 
-        glm::ivec4 scene_gl_coords(scene.pos.x, io.h - (scene.pos.y + scene.size.y), scene.size.x, scene.size.y);
+        glm::ivec4 scene_gl_coords(scene.pos.x, scene.get_gl_y(), scene.size.x, scene.size.y);
         glViewport(scene_gl_coords.x, scene_gl_coords.y, scene_gl_coords.z, scene_gl_coords.w);
         pp_unit->set_scene(scene_gl_coords);
 

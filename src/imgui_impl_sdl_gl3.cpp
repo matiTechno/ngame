@@ -10,6 +10,7 @@
 #include "imgui_impl_sdl_gl3.h"
 
 // SDL,GL3W
+#define NGAME_BLEND
 #include <NGAME/glad.h>
 #include <SDL2/SDL.h>
 //#include <SDL_syswm.h>

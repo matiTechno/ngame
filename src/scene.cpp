@@ -10,3 +10,8 @@ Scene::Scene():
     size(io.w, io.h),
     should_close(App::handle->should_close)
 {}
+
+int Scene::get_gl_y() const
+{
+    return io.h - (pos.y + size.y);
+}

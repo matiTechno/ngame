@@ -572,6 +572,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define NGAME_BLEND
 #include <NGAME/glad.h>
 
 struct gladGLversionStruct GLVersion;

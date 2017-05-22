@@ -1,6 +1,7 @@
 #include <NGAME/pp_unit.hpp>
 #include <NGAME/glad.h>
 #include <NGAME/gl/shader.hpp>
+#include <NGAME/blend.hpp>
 
 PP_unit::PP_unit(int w, int h):
     texs{Texture(GL_RGBA8, w, h), Texture(GL_RGBA8, w, h)},
@@ -62,9 +63,9 @@ void PP_unit::render(bool end, const Shader& shader) const
 
     if(end)
     {
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         has_finished = true;
+        Blend::set(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     }
     else
     {
@@ -80,7 +81,7 @@ void PP_unit::render(bool end, const Shader& shader) const
     if(end)
     {
         glDisable(GL_SCISSOR_TEST);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        Blend::set_default();
     }
     else
         glEnable(GL_BLEND);
