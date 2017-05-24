@@ -6,7 +6,7 @@
 int main() {
     try
     {
-        App app(960, 720, "test", SDL_WINDOW_MAXIMIZED, MIX_INIT_MP3);
+        App app(960, 720, "test", true, SDL_WINDOW_MAXIMIZED, MIX_INIT_MP3);
         app.start<Test_scene>();
     }
     catch(const std::exception& e)

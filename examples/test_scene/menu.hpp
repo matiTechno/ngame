@@ -1,3 +1,4 @@
+#pragma once
 #include <NGAME/scene.hpp>
 class Font;
 class Shader;

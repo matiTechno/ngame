@@ -20,6 +20,7 @@ struct IO
     float av_frametime;
     bool imgui_wants_input;
     int w, h;
+    float aspect;
 };
 
 // some fixed values:
@@ -33,11 +34,11 @@ struct IO
 // important:
 // to change blend function use Blend class
 // to make glBlend functions visible define NGAME_BLEND
-// befor including NGAME/glad.h
+// before including NGAME/glad.h
 class App
 {
 public:
-    App(int width, int height, const char* title, unsigned int sdl_flags = 0, int mixer_flags = 0,
+    App(int width, int height, const char* title, bool handle_quit, unsigned int sdl_flags = 0, int mixer_flags = 0,
         int posx = SDL_WINDOWPOS_CENTERED, int posy = SDL_WINDOWPOS_CENTERED);
 
     ~App();
@@ -69,6 +70,7 @@ private:
     SDL_Window* win;
     mutable bool should_close = false;
     std::vector<Scene*> scenes_to_render;
+    const bool handle_quit;
 
     void init_mixer(int mixer_flags);
 

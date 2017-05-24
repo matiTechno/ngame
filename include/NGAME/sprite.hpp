@@ -4,12 +4,18 @@
 class Texture;
 class Text;
 
+struct no_ctor
+{};
+
 class Sprite
 {
 public:
     Sprite() = default;
     // set sprite as text bbox
     Sprite(const Text& text);
+
+    Sprite(no_ctor)
+    {}
 
     glm::vec2 pos;
     glm::vec2 size;

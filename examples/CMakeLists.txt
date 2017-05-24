@@ -1,1 +1,2 @@
 add_subdirectory(test_scene)
+add_subdirectory(arkanoid_v3)

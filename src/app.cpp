@@ -17,7 +17,8 @@ const App* App::handle = nullptr;
 
 App::~App() = default;
 
-App::App(int width, int height, const char *title, unsigned int sdl_flags, int mixer_flags, int posx, int posy)
+App::App(int width, int height, const char *title, bool handle_quit, unsigned int sdl_flags, int mixer_flags, int posx, int posy):
+    handle_quit(handle_quit)
 {
     assert(!handle);
     handle = this;
@@ -126,9 +127,8 @@ void App::process_input() {
     io.events.clear();
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-        if(event.type == SDL_QUIT)
+        if(event.type == SDL_QUIT && handle_quit)
         {
-            // temporary for convenience
             should_close = true;
             continue;
         }
@@ -139,6 +139,7 @@ void App::process_input() {
     }
 
     SDL_GL_GetDrawableSize(win, &io.w, &io.h);
+    io.aspect = float(io.w) / io.h;
 
     ImGui_ImplSdlGL3_NewFrame(win);
     io.imgui_wants_input = ImGui::GetIO().WantCaptureKeyboard && ImGui::GetIO().WantCaptureMouse;

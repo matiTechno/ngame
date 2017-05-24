@@ -100,7 +100,6 @@ void Test_scene::render()
         sprite.texture = &texture;
         sprite.tex_coords = glm::ivec4(0, 0, texture.get_size());
         renderer2d.render(sprite);
-        renderer2d.flush();
     }
 
     emitter.render(renderer2d);
