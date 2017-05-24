@@ -6,7 +6,7 @@ int main()
 {
     try
     {
-        App app(1000, 600, "arkanoid_v3", false);
+        App app(1000, 600, "arkanoid_v3", false, 3, 3);
         app.start<Sc_master>();
     }
     catch(const std::exception& e)

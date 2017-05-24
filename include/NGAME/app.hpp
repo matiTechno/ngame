@@ -38,7 +38,8 @@ struct IO
 class App
 {
 public:
-    App(int width, int height, const char* title, bool handle_quit, unsigned int sdl_flags = 0, int mixer_flags = 0,
+    App(int width, int height, const char* title, bool handle_quit, int gl_major, int gl_minor,
+        unsigned int sdl_flags = 0, int mixer_flags = 0,
         int posx = SDL_WINDOWPOS_CENTERED, int posy = SDL_WINDOWPOS_CENTERED);
 
     ~App();

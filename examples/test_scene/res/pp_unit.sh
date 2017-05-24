@@ -1,6 +1,6 @@
 #VERTEX
 
-#version 430
+#version 330
 
 layout(location = 0) in vec4 vertex;
 
@@ -14,7 +14,7 @@ void main()
 
 #FRAGMENT
 
-#version 430
+#version 330
 
 out vec4 color;
 uniform sampler2D sampl;

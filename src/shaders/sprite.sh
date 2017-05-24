@@ -2,7 +2,7 @@ R"(
 
 #VERTEX
 
-#version 430
+#version 330
 
 layout(location = 0) in vec4 vertex;
 layout(location = 1) in vec4 color;
@@ -23,7 +23,7 @@ void main()
 
 #FRAGMENT
 
-#version 430
+#version 330
 
 out vec4 color;
 

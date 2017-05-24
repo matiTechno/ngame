@@ -17,7 +17,8 @@ const App* App::handle = nullptr;
 
 App::~App() = default;
 
-App::App(int width, int height, const char *title, bool handle_quit, unsigned int sdl_flags, int mixer_flags, int posx, int posy):
+App::App(int width, int height, const char *title, bool handle_quit, int gl_major, int gl_minor,
+         unsigned int sdl_flags, int mixer_flags, int posx, int posy):
     handle_quit(handle_quit)
 {
     assert(!handle);
@@ -40,8 +41,8 @@ App::App(int width, int height, const char *title, bool handle_quit, unsigned in
     del_sdl = std::make_unique<Del>([]() { SDL_Quit(); });
 
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, gl_major);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, gl_minor);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS,
                         SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
