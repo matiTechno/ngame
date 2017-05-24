@@ -5,7 +5,8 @@
 constexpr glm::vec2 Sc_level::vg_start;
 
 Sc_level::Sc_level():
-    tex_back("res/jupiter.jpg")
+    tex_back("res/jupiter.jpg"),
+    shader("res/wave.sh", false)
 {
     is_opaque = false;
 }
@@ -88,11 +89,63 @@ void Sc_level::render()
     }
     // virtual game area
     {
+        renderer2d.flush();
+        pp_unit.start();
+
         Sprite sprite;
         sprite.pos = vg_start;
         sprite.size = vg_size;
-        sprite.color = glm::vec4(1.f, 0.f, 0.f, 0.5f);
+        sprite.color = glm::vec4(1.f, 0.f, 0.f, 0.8f);
         renderer2d.render(sprite);
+
+        time += io.frametime;
+        shader.bind();
+        glUniform1f(shader.get_uni_location("time"), time);
+        glm::ivec4 pp_scene_coords(pos.x, get_gl_y(), size);
+        glUniform4iv(shader.get_uni_location("scene_coords"), 1, &pp_scene_coords.x);
+
+        renderer2d.flush();
+        pp_unit.render(true, shader);
     }
+    // prototyping stuff
+    {
+        {
+            Sprite sprite;
+            sprite.color = glm::vec4(0.f, 1.f, 0.f, 0.4f);
+            sprite.pos = glm::vec2(0.f);
+            sprite.size = glm::vec2(vg_size.x, wall_width);
+            renderer2d.render(sprite);
+
+            sprite.pos = glm::vec2(0.f, wall_width);
+            sprite.size = glm::vec2(wall_width, vg_size.y - wall_width);
+            renderer2d.render(sprite);
+
+            sprite.pos = glm::vec2(vg_size.x - wall_width, wall_width);
+            sprite.size = glm::vec2(wall_width, vg_size.y - wall_width);
+            renderer2d.render(sprite);
+
+            sprite.color = glm::vec4(1.f, 1.f, 1.f, 0.6f);
+            sprite.size = paddle_size;
+            sprite.pos.x = vg_size.x / 2.f - paddle_size.x / 2.f;
+            sprite.pos.y = paddle_pos_y - paddle_size.y / 2.f;
+            renderer2d.render(sprite);
+        }
+    }
+
     renderer2d.flush();
+
+    // debug
+    {
+        ImGui::Begin("control");
+        ImGui::Text("fb_size: %d x %d", io.w, io.h);
+        ImGui::Spacing();
+        ImGui::Text("frametime(ms): %.3f", io.av_frametime * 1000.f);
+        ImGui::Spacing();
+        if(ImGui::Button("vsync on / off"))
+        {
+            vsync = !vsync;
+            SDL_GL_SetSwapInterval(vsync);
+        }
+        ImGui::End();
+    }
 }
