@@ -22,6 +22,7 @@ struct IO
     int w, h;
     float aspect;
     SDL_Window* win;
+    int win_flags;
 };
 
 // some fixed values:

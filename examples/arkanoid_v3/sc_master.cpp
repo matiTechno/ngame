@@ -21,9 +21,10 @@ Sc_master::Sc_master(const glm::ivec2& win_size):
 
 void Sc_master::update()
 {
-    if(SDL_GetWindowFlags(io.win) & (SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_MAXIMIZED))
+    if(io.win_flags & (SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_MAXIMIZED))
         return;
-    SDL_GetWindowSize(io.win, &win_size.x, &win_size.y);
+    win_size.x = io.w;
+    win_size.y = io.h;
 }
 
 void Sc_master::quit_and_save()

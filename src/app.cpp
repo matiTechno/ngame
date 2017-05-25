@@ -141,6 +141,7 @@ void App::process_input() {
 
     SDL_GL_GetDrawableSize(win, &io.w, &io.h);
     io.aspect = float(io.w) / io.h;
+    io.win_flags = SDL_GetWindowFlags(win);
 
     ImGui_ImplSdlGL3_NewFrame(win);
     io.imgui_wants_input = ImGui::GetIO().WantCaptureKeyboard && ImGui::GetIO().WantCaptureMouse;

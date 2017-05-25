@@ -106,6 +106,11 @@ void Sc_level::set_coords()
 
 void Sc_level::render()
 {
+    if((io.win_flags & SDL_WINDOW_FULLSCREEN_DESKTOP) && !show_debug)
+        SDL_ShowCursor(0);
+    else
+        SDL_ShowCursor(1);
+
     // render background texture
     renderer2d.set_projection(glm::vec2(0.f), size);
     {
@@ -233,6 +238,9 @@ void Sc_level::render()
             SDL_SetWindowFullscreen(io.win, SDL_WINDOW_FULLSCREEN_DESKTOP & SDL_GetWindowFlags(io.win)
                                     ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
         }
+        ImGui::Spacing();
+        if(ImGui::Button("quit"))
+            Sc_master::handle->quit_and_save();
         ImGui::End();
     }
 }
