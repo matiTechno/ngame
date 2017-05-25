@@ -52,4 +52,5 @@ private:
     int mus_vol = 12;
     Emitter emitter;
     bool show_debug = false;
+    Texture tex_heart;
 };

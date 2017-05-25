@@ -24,7 +24,7 @@ void Life_bar::render(const Renderer2d& renderer) const
     auto pos = this->pos;
     for(auto i = 0; i < lifes; ++i)
     {
-        renderer.render(pos, glm::vec2(quad_size), glm::ivec4(), nullptr, 0.f, glm::vec2(), color);
+        renderer.render(pos, glm::vec2(quad_size), glm::ivec4(0, 0, texture->get_size()), texture, 0.f, glm::vec2(), color);
         pos.x += quad_size + spacing;
     }
 }

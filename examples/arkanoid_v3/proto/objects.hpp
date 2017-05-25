@@ -29,11 +29,12 @@ struct Brick: public Bbox
 struct Life_bar
 {
     int lifes = 3;
-    const float quad_size = 30.f;
+    const float quad_size = 35.f;
     const float spacing = 10.f;
     glm::vec2 pos;
-    glm::vec4 color{1.f, 0.f, 0.f, 1.f};
+    glm::vec4 color{1.f, 1.f, 1.f, 1.f};
     float time = 0.f;
+    Texture* texture;
 
     void update(float dt);
     void render(const Renderer2d& renderer) const;

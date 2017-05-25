@@ -13,7 +13,8 @@ Sc_level::Sc_level():
     tex_ball("res/ball.png"),
     tex_brick("res/bricks.png"),
     music("res/Blind Shift.mp3"),
-    emitter(Sc_master::handle->rn_eng)
+    emitter(Sc_master::handle->rn_eng),
+    tex_heart("res/heart.png")
 {
     is_opaque = false;
     init_proto();
@@ -37,6 +38,8 @@ void Sc_level::init_proto()
 
     ball.texture = &tex_ball;
     ball.spawn(paddle, false);
+
+    life_bar.texture = &tex_heart;
 
     auto a_start = vg_start + Wall::width;
     glm::vec2 a_size(vg_size.x - 2 * Wall::width, 280.f);
