@@ -1,6 +1,7 @@
 #include "objects.hpp"
 #include <NGAME/renderer2d.hpp>
 #include <glm/trigonometric.hpp>
+#include "../sc_master.hpp"
 
 void Wall::render(const Renderer2d& renderer) const
 {
@@ -30,11 +31,17 @@ void Life_bar::render(const Renderer2d& renderer) const
 }
 
 // not fully implemented
-void Ball::spawn(const Paddle& paddle, bool dir)
+void Ball::spawn(const Paddle& paddle)
 {
-    (void)dir;
     pos.y = paddle.pos.y - 2 * radius;
     pos.x = paddle.pos.x + paddle.size.x / 2.f - radius;
+    is_stuck = true;
+
+    std::uniform_int_distribution<int> u(0, 1);
+    auto dir = u(Sc_master::handle->rn_eng);
+    vel = init_vel;
+    if(dir)
+        vel.x *= -1.f;
 }
 
 void Ball::render(const Renderer2d& renderer) const
@@ -46,4 +53,19 @@ void Ball::render(const Renderer2d& renderer) const
 void Paddle::render(const Renderer2d& renderer) const
 {
     renderer.render(pos, size, glm::ivec4(), nullptr, 0.f, glm::vec2(), glm::vec4(1.f, 1.f, 1.f, 0.6f));
+}
+
+void Paddle::update(float dt, Ball& ball)
+{
+    pos.x += vel * dt;
+    if(ball.is_stuck)
+        ball.pos.x += vel * dt;
+}
+
+void Ball::update(float dt)
+{
+    if(is_stuck)
+        return;
+
+    pos += vel * dt;
 }

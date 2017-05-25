@@ -4,6 +4,7 @@
 class Texture;
 class Renderer2d;
 struct Paddle;
+#include <glm/gtc/constants.hpp>
 
 struct Bbox
 {
@@ -28,7 +29,8 @@ struct Brick: public Bbox
 
 struct Life_bar
 {
-    int lifes = 3;
+    void init(){lifes = 3;}
+    int lifes;
     const float quad_size = 35.f;
     const float spacing = 10.f;
     glm::vec2 pos;
@@ -44,13 +46,14 @@ struct Ball
 {
     const float radius = 25.f;
     glm::vec2 pos;
-    glm::vec2 velocity;
+    glm::vec2 vel;
+    glm::vec2 init_vel{100.f, -200.f};
     Texture* texture;
-    bool is_stuck = true;
+    bool is_stuck;
     float immune_time = 0.f;
+    float immune_coeff = 0.5f;
 
-    // dir should be random
-    void spawn(const Paddle& paddle, bool dir);
+    void spawn(const Paddle& paddle);
     void update(float dt);
     void render(const Renderer2d& renderer) const;
 };
@@ -58,8 +61,10 @@ struct Ball
 struct Paddle: public Bbox
 {
     float vel = 0.f;
-    float vel_coeff = 100.f;
+    float vel_coeff = 480.f;
+    float max_angle = glm::pi<float>() / 8.f;
 
-    void update(float dt);
+    void update(float dt, Ball& ball);
     void render(const Renderer2d& renderer) const;
+    void reflect(Ball* ball);
 };

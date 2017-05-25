@@ -8,6 +8,7 @@
 #include <NGAME/sound.hpp>
 // temp (for emitter class)
 #include "../test_scene/test_scene.hpp"
+#include <set>
 
 // most important thing todo:
 // entity component system with metaprogramming
@@ -35,6 +36,11 @@ public:
 private:
     Texture tex_back;
     bool vsync = true;
+    std::set<int> pressed_keys;
+    bool is_pressed(int key) const;
+    std::set<int> pressed_keys2;
+    bool was_pressed(int key) const;
+    glm::vec2 proj_start, proj_size;
 
     // prototyping stuff
     void init_proto();

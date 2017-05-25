@@ -32,14 +32,15 @@ void Sc_level::init_proto()
     walls[2].pos = glm::vec2(vg_size.x - Wall::width, Wall::width);
     walls[2].size = glm::vec2(Wall::width, vg_size.y - Wall::width);
 
-    paddle.size = glm::vec2(200.f, 40.f);
+    paddle.size = glm::vec2(150.f, 40.f);
     paddle.pos.x = vg_size.x / 2.f - paddle.size.x / 2.f;
     paddle.pos.y = 700.f - paddle.size.y / 2.f;
 
     ball.texture = &tex_ball;
-    ball.spawn(paddle, false);
+    ball.spawn(paddle);
 
     life_bar.texture = &tex_heart;
+    life_bar.init();
 
     auto a_start = vg_start + Wall::width;
     glm::vec2 a_size(vg_size.x - 2 * Wall::width, 280.f);
@@ -83,20 +84,75 @@ void Sc_level::init_proto()
 
 void Sc_level::process_input()
 {
+    // finding projection
+    proj_size = vg_size;
+    if(vg_aspect < io.aspect)
+        proj_size.x = io.aspect * proj_size.y;
+
+    else if(vg_aspect > io.aspect)
+        proj_size.y = proj_size.x / io.aspect;
+
+    proj_start = vg_start - (proj_size - vg_size) / 2.f;
+
+    // events stuff
+    pressed_keys2.clear();
     for(auto& event: io.events)
     {
+        auto key = event.key.keysym.sym;
+
         if(event.type == SDL_QUIT)
             Sc_master::handle->quit_and_save();
         else if(event.type == SDL_KEYDOWN)
         {
-            if(event.key.keysym.sym == SDLK_g)
+            pressed_keys.emplace(key);
+            pressed_keys2.emplace(key);
+
+            if(key == SDLK_g)
                 show_debug = !show_debug;
+
+        }
+        else if(event.type == SDL_KEYUP)
+        {
+            pressed_keys.erase(key);
         }
     }
+
+    // paddle actions
+    paddle.vel = 0.f;
+    if(is_pressed(SDLK_a) || is_pressed(SDLK_LEFT) || was_pressed(SDLK_a) || was_pressed(SDLK_LEFT))
+        paddle.vel -= paddle.vel_coeff;
+
+    if(is_pressed(SDLK_d) || is_pressed(SDLK_RIGHT) || was_pressed(SDLK_d) || was_pressed(SDLK_RIGHT))
+        paddle.vel += paddle.vel_coeff;
+
+    if(was_pressed(SDLK_SPACE))
+        ball.is_stuck = false;
 }
 
 void Sc_level::update()
-{}
+{
+    auto dt = io.frametime > 0.020f ? 0.020f : io.frametime;
+    paddle.update(dt, ball);
+    ball.update(dt);
+
+    if(ball.pos.y > proj_size.y)
+    {
+        life_bar.lifes -= 1;
+        if(life_bar.lifes <= 0)
+        {
+            // lose
+            // return
+        }
+        ball.spawn(paddle);
+    }
+
+    for(auto& brick: bricks)
+    {
+        if(!brick.is_destroyed)
+            return;
+    }
+    // win
+}
 
 void Sc_level::set_coords()
 {
@@ -148,17 +204,7 @@ void Sc_level::render()
     }
 
     // render game
-    auto proj_size = vg_size;
-    if(vg_aspect < io.aspect)
-        proj_size.x = io.aspect * proj_size.y;
-
-    else if(vg_aspect > io.aspect)
-        proj_size.y = proj_size.x / io.aspect;
-
-    auto proj_start = vg_start - (proj_size - vg_size) / 2.f;
-
     renderer2d.set_projection(proj_start, proj_size);
-
     // projection area
     {
         Sprite sprite;
@@ -243,4 +289,21 @@ void Sc_level::render()
             Sc_master::handle->quit_and_save();
         ImGui::End();
     }
+}
+
+bool Sc_level::is_pressed(int key) const
+{
+    auto it = pressed_keys.find(key);
+    if(it == pressed_keys.end())
+        return false;
+    return true;
+}
+
+bool Sc_level::was_pressed(int key) const
+{
+    auto it = pressed_keys2.find(key);
+    if(it == pressed_keys2.end())
+        return false;
+    return true;
+
 }

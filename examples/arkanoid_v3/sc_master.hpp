@@ -11,6 +11,7 @@ public:
 
 private:
     friend class Sc_level;
+    friend class Ball;
     static Sc_master* handle;
     std::mt19937 rn_eng;
     glm::ivec2 win_size;
