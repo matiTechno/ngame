@@ -33,10 +33,12 @@ Shader::Shader(const std::string& filename, bool hot_reload):
     this->hot_reload = hot_reload;
     id_name = filename;
 
+#ifndef __APPLE__
     std::error_code ec;
     ftt = fs::last_write_time(filename, ec);
     if(ec)
         std::cout << "shader, id_name = " + id_name + ": last_write_time failed" << std::endl;
+#endif
 
     make_program(load_source_from_file(filename));
 }
@@ -140,6 +142,7 @@ bool Shader::is_error(bool is_program, GLuint id, GLenum flag, const std::string
 
 void Shader::reload() const
 {
+#ifndef __APPLE__
     std::error_code ec;
     auto new_ftt = fs::last_write_time(id_name, ec);
     if(ec)
@@ -152,6 +155,7 @@ void Shader::reload() const
         ftt = new_ftt;
         make_program(load_source_from_file(id_name));
     }
+#endif
 }
 
 struct CD

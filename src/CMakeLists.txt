@@ -20,4 +20,8 @@ set(SOURCE
     )
 
 add_library(ngame ${SOURCE})
-target_link_libraries(ngame -lSDL2 -lSDL2_mixer -lstdc++fs)
+target_link_libraries(ngame -lSDL2 -lSDL2_mixer)
+
+if(NOT APPLE)
+    target_link_libraries(ngame -lstdc++fs)
+endif()

@@ -3,9 +3,11 @@
 #include <memory>
 #include <string>
 #include <map>
-#include <experimental/filesystem>
 
+#ifndef __APPLE__
+#include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
+#endif
 
 class Sh_part: public GL_base
 {
@@ -35,7 +37,9 @@ private:
     static GLuint bound_id;
     mutable std::map<std::string, GLint> uni_locations;
     bool hot_reload = false;
+#ifndef __APPLE__
     mutable fs::file_time_type ftt;
+#endif
     // when loaded from file it's filename
     std::string id_name;
 

@@ -26,6 +26,9 @@ SDL2_mixer
 glm
 GPU with OpenGL 3.3 (or 4.3 maybe) support
 
+on osx with homebrew
+brew install glm sdl2 sdl2_mixer --with-libvorbis --with-smpeg2
+
 internal:
 stb
 imgui
