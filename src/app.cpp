@@ -52,7 +52,7 @@ App::App(int width, int height, const char *title, bool handle_quit, int gl_majo
     if (!win)
         throw std::runtime_error(std::string("SDL_CreateWindow failed: ") +
                                  SDL_GetError());
-
+    io.win = win;
     auto temp_win = win;
 
     del_win =

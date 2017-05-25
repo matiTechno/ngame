@@ -21,6 +21,7 @@ struct IO
     bool imgui_wants_input;
     int w, h;
     float aspect;
+    SDL_Window* win;
 };
 
 // some fixed values:

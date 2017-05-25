@@ -3,7 +3,16 @@
 #include <glm/vec2.hpp>
 #include <NGAME/gl/texture.hpp>
 #include <NGAME/gl/shader.hpp>
+#include <vector>
+#include "proto/objects.hpp"
+#include <NGAME/sound.hpp>
+// temp (for emitter class)
+#include "../test_scene/test_scene.hpp"
 
+// most important thing todo:
+// entity component system with metaprogramming
+// (reflection && introspection with imgui)
+// (no virtual functions && flat memory)
 class Sc_level: public Scene
 {
 public:
@@ -17,19 +26,30 @@ public:
 
     void render() override;
 
-private:
-    // vg = virtual game area
+    // vg = virtual game area, minimal visible rect
+    // this is optimal resolution
     static constexpr glm::vec2 vg_start{0.f};
     static constexpr glm::vec2 vg_size{1000.f, 800.f};
     static constexpr float vg_aspect = vg_size.x / vg_size.y;
 
+private:
     Texture tex_back;
     bool vsync = true;
 
     // prototyping stuff
-    float wall_width = 50.f;
-    glm::vec2 paddle_size{200.f, 40.f};
-    float paddle_pos_y = 700.f;
+    void init_proto();
+
     Shader shader;
     float time = 0.f;
+    std::vector<Wall> walls;
+    Paddle paddle;
+    Ball ball;
+    Life_bar life_bar;
+    std::vector<Brick> bricks;
+    Texture tex_ball;
+    Texture tex_brick;
+    Music music;
+    int mus_vol = 12;
+    Emitter emitter;
+    bool show_debug = false;
 };

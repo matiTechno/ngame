@@ -21,7 +21,7 @@ uniform sampler2D sampl;
 
 uniform float time;
 uniform float vel = 50;
-uniform float len = 600;
+uniform float len = 400;
 uniform ivec4 scene_coords;
 uniform float Pi = 3.14;
 

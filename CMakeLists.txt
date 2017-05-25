@@ -21,5 +21,11 @@ add_definitions(-DGLM_FORCE_NO_CTOR_INIT)
 
 include_directories(./include)
 
+# temp
+if(APPLE)
+    include_directories(/usr/local/inlcude)
+    link_directories(/usr/local/lib)
+endif()
+
 add_subdirectory(src)
 add_subdirectory(examples)
