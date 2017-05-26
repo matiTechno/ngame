@@ -36,11 +36,16 @@ void Ball::spawn(const Paddle& paddle)
     pos.x = paddle.pos.x + paddle.size.x / 2.f - radius;
     is_stuck = true;
 
+    // set velocity direction to 45*
+    auto len = glm::length(vel);
+    auto tan_pow_2 = glm::pow(glm::tan(glm::pi<float>() / 4.f), 2.f);
+    vel.x = len / glm::sqrt(tan_pow_2 + 1.f);
+
+    vel.y = -glm::sqrt(glm::pow(len, 2.f) - glm::pow(vel.x, 2.f));
+
     std::uniform_int_distribution<int> d(0, 1);
-    auto dir = d(Sc_master::handle->rn_eng);
-    // calculate 45* angle
-    vel = init_vel;
-    if(dir)
+    auto right_dir = d(Sc_master::handle->rn_eng);
+    if(right_dir)
         vel.x *= -1.f;
 }
 

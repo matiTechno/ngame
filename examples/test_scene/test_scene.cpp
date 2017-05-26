@@ -158,7 +158,7 @@ void Emitter::spawn()
 {
     ++last_active;
 
-    if(last_active == int(particles.size())) // cast to clear warning
+    if(last_active == int(particles.size())) // to silence warning
         particles.emplace_back();
 
     auto& p = particles[last_active];

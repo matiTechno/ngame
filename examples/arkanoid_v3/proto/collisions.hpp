@@ -20,8 +20,13 @@ struct Collision
 };
 
 // returned Collision is valid for first object
-Collision get_collision(Bbox& bbox1, Bbox& bbox2);
 
-Collision get_collision(Ball& ball, Bbox& bbox);
+// if there is no collision does early return
+Collision get_collision(const Bbox& bbox1, const Bbox& bbox2);
+
+Collision get_collision(const Ball& ball, const Bbox& bbox);
+
+// for more lightweight stuff
+bool is_collision(const Bbox& bbox1, const Bbox& bbox2);
 
 void reflect_vel(Ball& ball, const Collision& collision);
