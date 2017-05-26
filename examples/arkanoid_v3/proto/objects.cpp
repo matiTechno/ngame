@@ -30,15 +30,15 @@ void Life_bar::render(const Renderer2d& renderer) const
     }
 }
 
-// not fully implemented
 void Ball::spawn(const Paddle& paddle)
 {
     pos.y = paddle.pos.y - 2 * radius;
     pos.x = paddle.pos.x + paddle.size.x / 2.f - radius;
     is_stuck = true;
 
-    std::uniform_int_distribution<int> u(0, 1);
-    auto dir = u(Sc_master::handle->rn_eng);
+    std::uniform_int_distribution<int> d(0, 1);
+    auto dir = d(Sc_master::handle->rn_eng);
+    // calculate 45* angle
     vel = init_vel;
     if(dir)
         vel.x *= -1.f;

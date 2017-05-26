@@ -46,8 +46,8 @@ struct Ball
 {
     const float radius = 25.f;
     glm::vec2 pos;
-    glm::vec2 vel;
     glm::vec2 init_vel{100.f, -200.f};
+    glm::vec2 vel = init_vel;
     Texture* texture;
     bool is_stuck;
     float immune_time = 0.f;

@@ -11,12 +11,13 @@ Sc_master::Sc_master(const glm::ivec2& win_size):
 {
     assert(handle == nullptr);
     handle = this;
-    set_new_scene<Sc_level>();
 
     std::random_device rd;
     rn_eng.seed(rd());
 
     update_when_not_top = true;
+
+    set_new_scene<Sc_level>();
 }
 
 void Sc_master::update()
