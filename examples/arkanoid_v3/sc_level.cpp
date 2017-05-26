@@ -1,6 +1,7 @@
 #include "sc_level.hpp"
 #include <NGAME/common.hpp>
 #include "sc_master.hpp"
+#include "proto/collisions.hpp"
 
 // glm::operator is not constexpr
 constexpr glm::vec2 Sc_level::vg_start;
@@ -132,8 +133,20 @@ void Sc_level::process_input()
 void Sc_level::update()
 {
     auto dt = io.frametime > 0.020f ? 0.020f : io.frametime;
+
     paddle.update(dt, ball);
     ball.update(dt);
+
+    for(auto& wall: walls)
+    {
+        auto coll = get_collision(paddle, wall);
+        if(coll.is)
+        {
+            paddle.pos -= coll.pene_vec;
+            if(ball.is_stuck)
+                ball.pos -= coll.pene_vec;
+        }
+    }
 
     if(ball.pos.y > proj_size.y)
     {

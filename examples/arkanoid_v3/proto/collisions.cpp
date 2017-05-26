@@ -49,7 +49,7 @@ Collision get_collision(const Bbox& bbox1, const Bbox& bbox2)
     auto R1P = P - R1;
 
     collision.pene_dir = get_dir(R1P);
-    collision.pene_vec = glm::normalize(R1P) * (bb1_h_size - glm::length(R1P));
+    collision.pene_vec = glm::normalize(R1P) * (bb1_h_size - glm::length(R1P) + add_pene);
     collision.point = P;
 
     return collision;
@@ -71,7 +71,7 @@ Collision get_collision(const Ball& ball, const Bbox& bbox)
     auto BP = P - B;
 
     return Collision{glm::length(BP) < ball.radius, get_dir(BP),
-                glm::normalize(BP) * (ball.radius - glm::length(BP)), P};
+                glm::normalize(BP) * (ball.radius - glm::length(BP) + add_pene), P};
 }
 
 bool is_collision(const Bbox& bbox1, const Bbox& bbox2)

@@ -3,6 +3,10 @@ class Bbox;
 class Ball;
 #include <glm/vec2.hpp>
 
+// it is added to pene_vec to avoid some floating point errors
+// when correcting position
+static constexpr float add_pene = 0.001f;
+
 enum class Dir
 {
     left,
