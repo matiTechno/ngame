@@ -237,7 +237,7 @@ void Sc_level::render()
     {
         {
             emitter.spawn_size = glm::vec2(proj_size.x, 20.f);
-            emitter.spawn_pos = glm::vec2(proj_start.x, proj_size.y - emitter.spawn_size.y);
+            emitter.spawn_pos = glm::vec2(proj_start.x, proj_start.y + proj_size.y - emitter.spawn_size.y);
             emitter.update(io.frametime);
             emitter.render(renderer2d);
 
