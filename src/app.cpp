@@ -146,6 +146,9 @@ void App::process_input() {
     ImGui_ImplSdlGL3_NewFrame(win);
     io.imgui_wants_input = ImGui::GetIO().WantCaptureKeyboard && ImGui::GetIO().WantCaptureMouse;
 
+    for(auto& scene: scenes)
+        scene->start();
+
     scenes.back()->process_input();
 }
 

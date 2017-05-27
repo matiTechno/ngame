@@ -83,9 +83,8 @@ void Sc_level::init_proto()
     emitter.reserve(1.f / emitter.spawn_time * emitter.life_max);
 }
 
-void Sc_level::process_input()
+void Sc_level::start()
 {
-    // finding projection
     proj_size = vg_size;
     if(vg_aspect < io.aspect)
         proj_size.x = io.aspect * proj_size.y;
@@ -94,9 +93,12 @@ void Sc_level::process_input()
         proj_size.y = proj_size.x / io.aspect;
 
     proj_start = vg_start - (proj_size - vg_size) / 2.f;
+}
 
-    // events stuff
+void Sc_level::process_input()
+{
     pressed_keys2.clear();
+
     for(auto& event: io.events)
     {
         auto key = event.key.keysym.sym;
@@ -108,18 +110,19 @@ void Sc_level::process_input()
             pressed_keys.emplace(key);
             pressed_keys2.emplace(key);
 
-            if(key == SDLK_g)
-                show_debug = !show_debug;
-
         }
         else if(event.type == SDL_KEYUP)
-        {
             pressed_keys.erase(key);
-        }
     }
 
-    // paddle actions
     paddle.vel = 0.f;
+
+    if(io.imgui_wants_input)
+        return;
+
+    if(was_pressed(SDLK_g))
+        show_debug = !show_debug;
+
     if(is_pressed(SDLK_a) || is_pressed(SDLK_LEFT) || was_pressed(SDLK_a) || was_pressed(SDLK_LEFT))
         paddle.vel -= paddle.vel_coeff;
 
@@ -137,6 +140,8 @@ void Sc_level::update()
     paddle.update(dt, ball);
     ball.update(dt);
 
+    glm::vec2 ball_correct(0.f);
+
     for(auto& wall: walls)
     {
         auto coll = get_collision(paddle, wall);
@@ -146,16 +151,57 @@ void Sc_level::update()
             if(ball.is_stuck)
                 ball.pos -= coll.pene_vec;
         }
+        auto coll2 = get_collision(ball, wall);
+        if(coll2.is)
+        {
+            reflect_vel(ball, coll2);
+            if(glm::abs(coll2.pene_vec.x) > glm::abs(ball_correct.x))
+                ball_correct.x -= coll2.pene_vec.x;
+            if(glm::abs(coll2.pene_vec.y) > glm::abs(ball_correct.y))
+                ball_correct.y -= coll2.pene_vec.y;
+        }
+    }
+    Bbox ball_bb;
+    ball_bb.pos = ball.pos;
+    ball_bb.size = glm::vec2(ball.radius * 2.f);
+    for(auto& brick: bricks)
+    {
+        if(brick.is_destroyed)
+            continue;
+
+        if(is_collision(ball_bb, brick) == 0)
+            continue;
+
+        auto coll = get_collision(ball, brick);
+        if(coll.is)
+        {
+            brick.is_destroyed = true;
+
+            reflect_vel(ball, coll);
+            if(glm::abs(coll.pene_vec.x) > glm::abs(ball_correct.x))
+                ball_correct.x -= coll.pene_vec.x;
+            if(glm::abs(coll.pene_vec.y) > glm::abs(ball_correct.y))
+                ball_correct.y -= coll.pene_vec.y;
+        }
+    }
+    if(ball.immune_time <= 0.f)
+    {
+        auto coll = get_collision(ball, paddle);
+        if(coll.is)
+        {
+            reflect_vel(ball, coll);
+            ball.pos -= coll.pene_vec;
+            ball.immune_time = ball.immune_coeff;
+        }
     }
 
-    if(ball.pos.y > proj_size.y)
+    ball.pos += ball_correct;
+
+    if(ball.pos.y > proj_start.y + proj_size.y)
     {
         life_bar.lifes -= 1;
         if(life_bar.lifes <= 0)
-        {
-            // lose
-            // return
-        }
+        {}
         ball.spawn(paddle);
     }
 
@@ -164,7 +210,6 @@ void Sc_level::update()
         if(!brick.is_destroyed)
             return;
     }
-    // win
 }
 
 void Sc_level::set_coords()
@@ -218,6 +263,7 @@ void Sc_level::render()
 
     // render game
     renderer2d.set_projection(proj_start, proj_size);
+
     // projection area
     {
         Sprite sprite;
@@ -262,7 +308,10 @@ void Sc_level::render()
             ball.render(renderer2d);
 
             for(auto& brick: bricks)
-                brick.render(renderer2d);
+            {
+                if(brick.is_destroyed == 0)
+                    brick.render(renderer2d);
+            }
 
             life_bar.update(io.frametime);
             life_bar.pos = proj_start + glm::vec2(40.f);
@@ -318,5 +367,4 @@ bool Sc_level::was_pressed(int key) const
     if(it == pressed_keys2.end())
         return false;
     return true;
-
 }

@@ -19,6 +19,8 @@ class Sc_level: public Scene
 public:
     Sc_level();
 
+    void start() override;
+
     void process_input() override;
 
     void update() override;

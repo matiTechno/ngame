@@ -73,4 +73,7 @@ void Ball::update(float dt)
         return;
 
     pos += vel * dt;
+
+    if(immune_time > 0.f)
+        immune_time -= dt;
 }

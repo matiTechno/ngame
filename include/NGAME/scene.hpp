@@ -6,12 +6,16 @@ struct IO;
 class PP_unit;
 class Font_loader;
 
-// virtual functions execute in the same order as presented
+// virtual functions are executed in the same order as presented
+// data in IO structure is ready to use in all functions
 class Scene {
 public:
     Scene();
     virtual ~Scene() = default;
 
+    // always
+    virtual void start()
+    {}
     // only when top
     virtual void process_input()
     {}
