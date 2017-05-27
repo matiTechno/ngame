@@ -3,9 +3,7 @@
 #include "sc_master.hpp"
 #include "proto/collisions.hpp"
 
-// glm::operator is not constexpr
 constexpr glm::vec2 Sc_level::vg_start;
-// without this debug build fails
 constexpr glm::vec2 Sc_level::vg_size;
 
 Sc_level::Sc_level():
@@ -18,30 +16,8 @@ Sc_level::Sc_level():
     tex_heart("res/heart.png")
 {
     is_opaque = false;
-    init_proto();
     music.set_volume(mus_vol);
     music.play(true);
-}
-
-void Sc_level::init_proto()
-{
-    walls.resize(3);
-    walls[0].pos = glm::vec2(0.f);
-    walls[0].size = glm::vec2(vg_size.x, Wall::width);
-    walls[1].pos = glm::vec2(0.f, Wall::width);
-    walls[1].size = glm::vec2(Wall::width, vg_size.y - Wall::width);
-    walls[2].pos = glm::vec2(vg_size.x - Wall::width, Wall::width);
-    walls[2].size = glm::vec2(Wall::width, vg_size.y - Wall::width);
-
-    paddle.size = glm::vec2(150.f, 40.f);
-    paddle.pos.x = vg_size.x / 2.f - paddle.size.x / 2.f;
-    paddle.pos.y = 700.f - paddle.size.y / 2.f;
-
-    ball.texture = &tex_ball;
-    ball.spawn(paddle);
-
-    life_bar.texture = &tex_heart;
-    life_bar.init();
 
     auto a_start = vg_start + Wall::width;
     glm::vec2 a_size(vg_size.x - 2 * Wall::width, 280.f);
@@ -79,8 +55,38 @@ void Sc_level::init_proto()
     emitter.ang_vel_max = 0.f;
     emitter.color_min = glm::vec4(1.f, 0.1f, 0.f, 0.2f);
     emitter.color_max = glm::vec4(1.f, 0.7f, 0.1f, 0.6f);
-    // ...
     emitter.reserve(1.f / emitter.spawn_time * emitter.life_max);
+
+    walls.resize(3);
+    walls[0].pos = glm::vec2(0.f);
+    walls[0].size = glm::vec2(vg_size.x, Wall::width);
+    walls[1].pos = glm::vec2(0.f, Wall::width);
+    walls[1].size = glm::vec2(Wall::width, vg_size.y - Wall::width);
+    walls[2].pos = glm::vec2(vg_size.x - Wall::width, Wall::width);
+    walls[2].size = glm::vec2(Wall::width, vg_size.y - Wall::width);
+
+    life_bar.texture = &tex_heart;
+
+    ball.texture = &tex_ball;
+
+    paddle.size = glm::vec2(150.f, 40.f);
+
+    set_level();
+}
+
+void Sc_level::set_level()
+{
+    for(auto& brick: bricks)
+        brick.is_destroyed = false;
+
+    life_bar.lifes = 3;
+
+    paddle.pos.x = vg_size.x / 2.f - paddle.size.x / 2.f;
+    paddle.pos.y = 700.f - paddle.size.y / 2.f;
+
+    ball.vel = Ball::init_vel;
+    ball.spawn(paddle);
+    ball.immune_time = 0.f;
 }
 
 void Sc_level::start()
@@ -124,10 +130,10 @@ void Sc_level::process_input()
         show_debug = !show_debug;
 
     if(is_pressed(SDLK_a) || is_pressed(SDLK_LEFT) || was_pressed(SDLK_a) || was_pressed(SDLK_LEFT))
-        paddle.vel -= paddle.vel_coeff;
+        paddle.vel -= Paddle::vel_len;
 
     if(is_pressed(SDLK_d) || is_pressed(SDLK_RIGHT) || was_pressed(SDLK_d) || was_pressed(SDLK_RIGHT))
-        paddle.vel += paddle.vel_coeff;
+        paddle.vel += Paddle::vel_len;
 
     if(was_pressed(SDLK_SPACE))
         ball.is_stuck = false;
@@ -189,9 +195,9 @@ void Sc_level::update()
         auto coll = get_collision(ball, paddle);
         if(coll.is)
         {
-            reflect_vel(ball, coll);
+            paddle.reflect(ball, coll);
             ball.pos -= coll.pene_vec;
-            ball.immune_time = ball.immune_coeff;
+            ball.immune_time = Ball::max_immune;
         }
     }
 
@@ -260,18 +266,8 @@ void Sc_level::render()
         renderer2d.render(sprite);
         renderer2d.flush();
     }
-
     // render game
     renderer2d.set_projection(proj_start, proj_size);
-
-    // projection area
-    {
-        Sprite sprite;
-        sprite.pos = proj_start;
-        sprite.size = proj_size;
-        sprite.color = glm::vec4(0.f, 1.f, 0.f, 0.2f);
-        //renderer2d.render(sprite);
-    }
     // virtual game area
     {
         renderer2d.flush();
@@ -292,7 +288,7 @@ void Sc_level::render()
         renderer2d.flush();
         pp_unit.render(true, shader);
     }
-    // prototyping stuff
+    // game objects
     {
         {
             emitter.spawn_size = glm::vec2(proj_size.x, 20.f);
@@ -321,7 +317,7 @@ void Sc_level::render()
 
     renderer2d.flush();
 
-    // debug
+    // imgui
     if(show_debug)
     {
         ImGui::Begin("control");

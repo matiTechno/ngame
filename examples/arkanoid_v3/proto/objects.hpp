@@ -5,6 +5,7 @@ class Texture;
 class Renderer2d;
 struct Paddle;
 #include <glm/gtc/constants.hpp>
+struct Collision;
 
 struct Bbox
 {
@@ -15,12 +16,13 @@ struct Bbox
 struct Wall: public Bbox
 {
     static constexpr float width = 50.f;
+
     void render(const Renderer2d& renderer) const;
 };
 
 struct Brick: public Bbox
 {
-    bool is_destroyed = false;
+    bool is_destroyed;
     Texture* texture;
     glm::ivec4 tex_coords;
 
@@ -29,13 +31,13 @@ struct Brick: public Bbox
 
 struct Life_bar
 {
-    void init(){lifes = 3;}
-    int lifes;
-    const float quad_size = 35.f;
-    const float spacing = 10.f;
+    static constexpr float quad_size = 35.f;
+    static constexpr float spacing = 10.f;
+
     glm::vec2 pos;
+    int lifes;
     glm::vec4 color{1.f, 1.f, 1.f, 1.f};
-    float time = 0.f;
+    float time;
     Texture* texture;
 
     void update(float dt);
@@ -44,14 +46,15 @@ struct Life_bar
 
 struct Ball
 {
-    const float radius = 25.f;
+    static constexpr float radius = 25.f;
+    static constexpr float max_immune = 0.3f;
+    static constexpr glm::vec2 init_vel{600.f, 0.f};
+
     glm::vec2 pos;
-    glm::vec2 init_vel{400.f, 0.f};
-    glm::vec2 vel = init_vel;
+    glm::vec2 vel;
     Texture* texture;
     bool is_stuck;
-    float immune_time = 0.f;
-    float immune_coeff = 0.3f;
+    float immune_time;
 
     void spawn(const Paddle& paddle);
     void update(float dt);
@@ -60,11 +63,12 @@ struct Ball
 
 struct Paddle: public Bbox
 {
-    float vel = 0.f;
-    float vel_coeff = 480.f;
-    float max_angle = glm::pi<float>() / 8.f;
+    static constexpr float vel_len = 480.f;
+    static constexpr float min_angle = glm::pi<float>() / 8.f;
+
+    float vel;
 
     void update(float dt, Ball& ball);
     void render(const Renderer2d& renderer) const;
-    void reflect(Ball* ball);
+    void reflect(Ball& ball, const Collision& coll);
 };

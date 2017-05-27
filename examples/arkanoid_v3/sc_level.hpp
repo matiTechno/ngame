@@ -45,7 +45,7 @@ private:
     glm::vec2 proj_start, proj_size;
 
     // prototyping stuff
-    void init_proto();
+    void set_level();
 
     Shader shader;
     float time = 0.f;

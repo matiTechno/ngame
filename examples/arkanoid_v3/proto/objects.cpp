@@ -2,6 +2,7 @@
 #include <NGAME/renderer2d.hpp>
 #include <glm/trigonometric.hpp>
 #include "../sc_master.hpp"
+#include "collisions.hpp"
 
 void Wall::render(const Renderer2d& renderer) const
 {
@@ -36,7 +37,7 @@ void Ball::spawn(const Paddle& paddle)
     pos.x = paddle.pos.x + paddle.size.x / 2.f - radius;
     is_stuck = true;
 
-    // set velocity direction to 45*
+    // set velocity direction to 45 degree angle
     auto len = glm::length(vel);
     auto tan_pow_2 = glm::pow(glm::tan(glm::pi<float>() / 4.f), 2.f);
     vel.x = len / glm::sqrt(tan_pow_2 + 1.f);
@@ -76,4 +77,21 @@ void Ball::update(float dt)
 
     if(immune_time > 0.f)
         immune_time -= dt;
+}
+
+void Paddle::reflect(Ball& ball, const Collision& coll)
+{
+    if(ball.pos.y + ball.radius < pos.y)
+    {
+        auto P = pos.x + size.x / 2.f;
+        auto B = ball.pos.x + ball.radius;
+        auto reflect_coeff = glm::clamp((B - P) / (size.x / 2.f), -1.f, 1.f);
+        auto len = glm::length(ball.vel);
+        auto tan_pow_2 = glm::pow(glm::tan(min_angle), 2.f);
+
+        ball.vel.x = len / glm::sqrt(tan_pow_2 + 1.f) * reflect_coeff;
+        ball.vel.y = -glm::sqrt(glm::pow(len, 2.f) - glm::pow(ball.vel.x, 2.f));
+    }
+    else
+        reflect_vel(ball, coll);
 }
