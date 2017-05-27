@@ -4,6 +4,9 @@
 #include "../sc_master.hpp"
 #include "collisions.hpp"
 
+constexpr float Ball::radius;
+constexpr glm::vec2 Ball::init_vel;
+
 void Wall::render(const Renderer2d& renderer) const
 {
     renderer.render(pos, size, glm::ivec4(), nullptr, 0.f, glm::vec2(), glm::vec4(1.f, 0.7f, 0.f, 0.3f));
