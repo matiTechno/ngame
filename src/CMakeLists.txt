@@ -17,6 +17,7 @@ set(SOURCE
     sprite.cpp
     font_loader.cpp
     blend.cpp
+    vspace.cpp
     )
 
 add_library(ngame ${SOURCE})

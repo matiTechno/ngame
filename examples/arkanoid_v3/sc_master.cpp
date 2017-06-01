@@ -3,11 +3,13 @@
 #include <NGAME/app.hpp>
 #include <string>
 #include <fstream>
+#include <NGAME/renderer2d.hpp>
 
 Sc_master* Sc_master::handle = nullptr;
 
 Sc_master::Sc_master(const glm::ivec2& win_size):
-    win_size(win_size)
+    win_size(win_size),
+    tex_back("res/jupiter.jpg")
 {
     assert(handle == nullptr);
     handle = this;
@@ -15,17 +17,57 @@ Sc_master::Sc_master(const glm::ivec2& win_size):
     std::random_device rd;
     rn_eng.seed(rd());
 
-    update_when_not_top = true;
-
     set_new_scene<Sc_level>();
 }
 
-void Sc_master::update()
+void Sc_master::start()
 {
+    size.x = io.w;
+    size.y = io.h;
+
     if(io.win_flags & (SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_MAXIMIZED))
         return;
     win_size.x = io.w;
     win_size.y = io.h;
+}
+
+void Sc_master::render()
+{
+    // render background texture
+    renderer2d.set_projection(glm::vec2(0.f), size);
+    {
+        Sprite sprite;
+        sprite.pos = glm::vec2(0.f);
+        sprite.size = size;
+        sprite.texture = &tex_back;
+
+        auto tex_size = tex_back.get_size();
+        if(tex_size.x >= size.x && tex_size.y >= size.y)
+        {
+            glm::ivec2 c_pos = tex_size / 2 - size / 2;
+            sprite.tex_coords = glm::ivec4(c_pos, size);
+        }
+        else
+        {
+            auto tex_aspect = float(tex_size.x) / tex_size.y;
+            glm::ivec4 tex_coords(0, 0, tex_size);
+
+            if(io.aspect > tex_aspect)
+            {
+                tex_coords.w = tex_size.x / io.aspect;
+                tex_coords.y = (tex_size.y - tex_coords.w) / 2;
+            }
+            else if(io.aspect < tex_aspect)
+            {
+                tex_coords.z = tex_size.y * io.aspect;
+                tex_coords.x = (tex_size.x - tex_coords.z) / 2;
+            }
+
+            sprite.tex_coords = tex_coords;
+        }
+        renderer2d.render(sprite);
+        renderer2d.flush();
+    }
 }
 
 void Sc_master::quit_and_save()

@@ -7,7 +7,6 @@ constexpr glm::vec2 Sc_level::vg_start;
 constexpr glm::vec2 Sc_level::vg_size;
 
 Sc_level::Sc_level():
-    tex_back("res/jupiter.jpg"),
     shader("res/wave.sh", false),
     tex_ball("res/ball.png"),
     tex_brick("res/bricks.png"),
@@ -231,41 +230,6 @@ void Sc_level::render()
     else
         SDL_ShowCursor(1);
 
-    // render background texture
-    renderer2d.set_projection(glm::vec2(0.f), size);
-    {
-        Sprite sprite;
-        sprite.pos = glm::vec2(0.f);
-        sprite.size = size;
-        sprite.texture = &tex_back;
-
-        auto tex_size = tex_back.get_size();
-        if(tex_size.x >= size.x && tex_size.y >= size.y)
-        {
-            glm::ivec2 c_pos = tex_size / 2 - size / 2;
-            sprite.tex_coords = glm::ivec4(c_pos, size);
-        }
-        else
-        {
-            auto tex_aspect = float(tex_size.x) / tex_size.y;
-            glm::ivec4 tex_coords(0, 0, tex_size);
-
-            if(io.aspect > tex_aspect)
-            {
-                tex_coords.w = tex_size.x / io.aspect;
-                tex_coords.y = (tex_size.y - tex_coords.w) / 2;
-            }
-            else if(io.aspect < tex_aspect)
-            {
-                tex_coords.z = tex_size.y * io.aspect;
-                tex_coords.x = (tex_size.x - tex_coords.z) / 2;
-            }
-
-            sprite.tex_coords = tex_coords;
-        }
-        renderer2d.render(sprite);
-        renderer2d.flush();
-    }
     // render game
     renderer2d.set_projection(proj_start, proj_size);
     // virtual game area

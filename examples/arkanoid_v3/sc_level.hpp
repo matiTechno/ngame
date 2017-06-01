@@ -36,7 +36,6 @@ public:
     static constexpr float vg_aspect = vg_size.x / vg_size.y;
 
 private:
-    Texture tex_back;
     bool vsync = true;
     std::set<int> pressed_keys;
     bool is_pressed(int key) const;
