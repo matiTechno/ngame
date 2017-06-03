@@ -32,12 +32,17 @@ public:
     void render(const glm::vec2& pos, const glm::vec2& size, const glm::ivec4& tex_coords, const Texture* texture,
                 float rotation, const glm::vec2& rotation_point, const glm::vec4& color) const;
 
+    // last used projection
+    glm::vec2 get_pstart() const;
+    glm::vec2 get_prange() const;
+
 private:
     Sampler sampl_linear, sampl_nearest;
     mutable const Sampler* sampl_sprite = &sampl_linear;
     Shader sh_sprite;
     VAO vao;
     BO bo_quad, bo_sprite;
+    mutable glm::vec2 pstart, prange;
 
     struct Vbo_instance
     {

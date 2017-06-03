@@ -65,11 +65,24 @@ Renderer2d::Renderer2d():
                           reinterpret_cast<const void*>(offsetof(Vbo_instance, model) + 3 * sizeof(glm::vec4)));
 }
 
+glm::vec2 Renderer2d::get_pstart() const
+{
+    return pstart;
+}
+
+glm::vec2 Renderer2d::get_prange() const
+{
+    return prange;
+}
+
 void Renderer2d::set_projection(const glm::vec2& start, const glm::vec2& range) const
 {
     sh_sprite.bind();
     auto matrix = glm::ortho(start.x, start.x + range.x, start.y + range.y, start.y);
     glUniformMatrix4fv(sh_sprite.get_uni_location("projection"), 1, GL_FALSE, &matrix[0][0]);
+
+    pstart = start;
+    prange = range;
 }
 
 void Renderer2d::flush(Sampl_type type) const
