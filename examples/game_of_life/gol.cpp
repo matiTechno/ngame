@@ -15,7 +15,6 @@ constexpr float Gol::timestep;
 Gol::Gol():
     Vspace(0, 0, matrix.size * matrix.grid_size, matrix.size * matrix.grid_size),
     texture("res/saturn.jpg"),
-    sh_pp_pass("res/pp_pass.sh", false),
     sh_wave("res/wave.sh", false)
 {
    SDL_ShowCursor(0);

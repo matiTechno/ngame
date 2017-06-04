@@ -39,7 +39,6 @@ public:
 private:
     Matrix matrix;
     Texture texture;
-    Shader sh_pp_pass;
     Shader sh_wave;
     float time = 0.f;
     float accumulator = 0.f;
