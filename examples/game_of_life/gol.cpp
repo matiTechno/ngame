@@ -9,6 +9,8 @@
 
 constexpr int Matrix::size;
 constexpr float Matrix::grid_size;
+constexpr float Gol::grid_width;
+constexpr float Gol::timestep;
 
 Gol::Gol():
     Vspace(0, 0, matrix.size * matrix.grid_size, matrix.size * matrix.grid_size),
@@ -34,9 +36,9 @@ void Gol::render()
     pp_unit.start();
     {
         Sprite sprite;
-        sprite.pos = get_pstart();
-        sprite.size = get_psize();
-        sprite.color = glm::vec4(0.f, 1.f, 0.f, 0.7f);
+        sprite.pos = get_vstart();
+        sprite.size = get_vrange();
+        sprite.color = glm::vec4(0.5f, 0.f, 1.f, 0.8f);
         renderer2d.render(sprite);
         renderer2d.flush();
     }
@@ -49,8 +51,8 @@ void Gol::render()
     matrix.render(renderer2d);
 
     pp_unit.start();
-    render_grid(matrix.size, grid_width, glm::vec4(0.f, 0.f, 0.f, 0.3f));
-    pp_unit.render(true, sh_pp_pass);
+    render_grid(matrix.size, matrix.size, grid_width, glm::vec4(0.f, 0.f, 0.f, 0.3f));
+    pp_unit.render(true, sh_wave);
 }
 
 void Matrix::update()
@@ -80,7 +82,8 @@ void Matrix::update()
 
 void Matrix::render(const Renderer2d& renderer)
 {
-    glm::vec4 dum;
+    glm::ivec4 dum;
+    glm::vec2 dum2;
     glm::vec2 pos(0.f);
     glm::vec4 color;
     for(int i = 0; i < size; ++i)
@@ -92,7 +95,7 @@ void Matrix::render(const Renderer2d& renderer)
             else
                 color = glm::vec4(0.f);
 
-            renderer.render(pos, glm::vec2(grid_size), dum, nullptr, 0.f, dum, color);
+            renderer.render(pos, glm::vec2(grid_size), dum, nullptr, 0.f, dum2, color);
             pos.x += grid_size;
         }
         pos.x = 0.f;
@@ -122,7 +125,7 @@ Matrix::Matrix()
         if(code == '\n')
         {
             ++y;
-            assert(y < size);
+            assert(y <= size);
             x = 0;
             continue;
         }
@@ -132,6 +135,6 @@ Matrix::Matrix()
             matrix[y][x].current = 0;
 
         ++x;
-        assert(x < size);
+        assert(x <= size);
     }
 }

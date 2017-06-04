@@ -10,20 +10,20 @@
 
 Vspace::Vspace(float x, float y, float w, float h):
     vstart(x, y),
-    vsize(w, h)
+    vrange(w, h)
 {}
 
 glm::vec2 Vspace::get_vstart() const
 {return vstart;}
 
-glm::vec2 Vspace::get_vsize() const
-{return vsize;}
+glm::vec2 Vspace::get_vrange() const
+{return vrange;}
 
 glm::vec2 Vspace::get_pstart() const
 {return pstart;}
 
-glm::vec2 Vspace::get_psize() const
-{return psize;}
+glm::vec2 Vspace::get_prange() const
+{return prange;}
 
 void Vspace::start2()
 {}
@@ -33,17 +33,17 @@ void Vspace::start()
     size.x = io.w;
     size.y = io.h;
 
-    psize = vsize;
-    auto vaspect = vsize.x / vsize.y;
+    prange = vrange;
+    auto vaspect = vrange.x / vrange.y;
     if(vaspect < io.aspect)
-        psize.x = io.aspect * psize.y;
+        prange.x = io.aspect * prange.y;
 
     else if(vaspect > io.aspect)
-        psize.y = psize.x / io.aspect;
+        prange.y = prange.x / io.aspect;
 
-    pstart = vstart - (psize - vsize) / 2.f;
+    pstart = vstart - (prange - vrange) / 2.f;
 
-    renderer2d.set_projection(pstart, psize);
+    renderer2d.set_projection(pstart, prange);
 
     start2();
 }
@@ -72,7 +72,7 @@ glm::vec2 Vspace::get_mouse_vs() const
 void Vspace::render_background(const Texture& texture) const
 {
     auto prev_pstart = renderer2d.get_pstart();
-    auto prev_psize = renderer2d.get_prange();
+    auto prev_prange = renderer2d.get_prange();
     renderer2d.set_projection(glm::vec2(0.f), glm::vec2(io.w, io.h));
     {
         Sprite sprite;
@@ -107,17 +107,17 @@ void Vspace::render_background(const Texture& texture) const
         renderer2d.render(sprite);
         renderer2d.flush();
     }
-    renderer2d.set_projection(prev_pstart, prev_psize);
+    renderer2d.set_projection(prev_pstart, prev_prange);
 }
 
-void Vspace::render_grid(int num_x, float border_width, const glm::vec4& color) const
+void Vspace::render_grid(int num_x, int num_y, float border_width, const glm::vec4& color) const
 {
     auto prev_pstart = renderer2d.get_pstart();
-    auto prev_psize = renderer2d.get_prange();
+    auto prev_prange = renderer2d.get_prange();
     renderer2d.set_projection(glm::vec2(0.f), glm::vec2(io.w, io.h));
     {
         glm::vec2 ga_start(0.f), ga_size(io.w, io.h);
-        auto vaspect = vsize.x / vsize.y;
+        auto vaspect = vrange.x / vrange.y;
         if(io.aspect > vaspect)
         {
             ga_size.x = vaspect * ga_size.y;
@@ -129,24 +129,22 @@ void Vspace::render_grid(int num_x, float border_width, const glm::vec4& color) 
             ga_start.y = (io.h - ga_size.y) / 2.f;
         }
 
-        auto grid_size = ga_size.x / num_x;
-        auto num_y = ga_size.y / grid_size;
+        auto grid_size = ga_size / glm::vec2(num_x, num_y);
 
         auto grid_pos = ga_start;
+
+        glm::ivec4 dum;
+        glm::vec2 dum2;
 
         for(int i = 0; i < num_y; ++i)
         {
             for(int j = 0; j < num_x; ++j)
             {
-                Sprite sprite;
-                sprite.pos = grid_pos;
-                sprite.size = glm::vec2(grid_size);
-                sprite.color = color;
-                renderer2d.render(sprite);
-                grid_pos.x += grid_size;
+                renderer2d.render(grid_pos, glm::vec2(grid_size), dum, nullptr, 0.f, dum2, color);
+                grid_pos.x += grid_size.x;
             }
             grid_pos.x = ga_start.x;
-            grid_pos.y += grid_size;
+            grid_pos.y += grid_size.y;
         }
         renderer2d.flush();
 
@@ -156,18 +154,15 @@ void Vspace::render_grid(int num_x, float border_width, const glm::vec4& color) 
         {
             for(int j = 0; j < num_x; ++j)
             {
-                Sprite sprite;
-                sprite.pos = grid_pos + border_width;
-                sprite.size = glm::vec2(grid_size - border_width * 2.f);
-                sprite.color = glm::vec4(0.f);
-                renderer2d.render(sprite);
-                grid_pos.x += grid_size;
+                renderer2d.render(grid_pos + border_width, glm::vec2(grid_size - border_width * 2.f), dum, nullptr, 0.f,
+                                                                     dum2, glm::vec4(0.f));
+                grid_pos.x += grid_size.x;
             }
             grid_pos.x = ga_start.x;
-            grid_pos.y += grid_size;
+            grid_pos.y += grid_size.y;
         }
         renderer2d.flush();
         Blend::set_default();
     }
-    renderer2d.set_projection(prev_pstart, prev_psize);
+    renderer2d.set_projection(prev_pstart, prev_prange);
 }

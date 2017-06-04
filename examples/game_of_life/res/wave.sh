@@ -20,8 +20,8 @@ out vec4 color;
 uniform sampler2D sampl;
 
 uniform float time;
-uniform float vel = 50;
-uniform float len = 200;
+uniform float vel = 70;
+uniform float len = 500;
 uniform ivec4 scene_coords;
 uniform float Pi = 3.14;
 
