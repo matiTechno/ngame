@@ -1,6 +1,8 @@
 #pragma once
 #include "base.hpp"
 
+// access id by friend declaration
+
 class VAO: public GL_base
 {
 public:
@@ -18,6 +20,8 @@ public:
     BO();
 
     void bind(GLenum target) const;
+
+    friend class Gravity;
 };
 
 class FBO: public GL_base

@@ -11,9 +11,10 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+# qtcreator 4.3 doesn't parse headers with this
 file(GLOB_RECURSE headers
-    "*.hpp"
-    "*.h"
+#    "*.hpp"
+#    "*.h"
     "*.sh")
 add_custom_target(headers SOURCES ${headers})
 
