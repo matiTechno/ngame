@@ -10,6 +10,7 @@ class Renderer2d;
 class PP_unit;
 class Scene;
 class Font_loader;
+#include <glm/vec2.hpp>
 
 struct IO
 {
@@ -23,6 +24,7 @@ struct IO
     float aspect;
     SDL_Window* win;
     int win_flags;
+    glm::ivec2 cursor_pos;
 };
 
 // some fixed values:

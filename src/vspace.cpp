@@ -32,7 +32,12 @@ void Vspace::start()
 {
     size.x = io.w;
     size.y = io.h;
+    set_projection();
+    start2();
+}
 
+void Vspace::set_projection()
+{
     prange = vrange;
     auto vaspect = vrange.x / vrange.y;
     if(vaspect < io.aspect)
@@ -44,32 +49,46 @@ void Vspace::start()
     pstart = vstart - (prange - vrange) / 2.f;
 
     renderer2d.set_projection(pstart, prange);
-
-    start2();
 }
 
 void Vspace::zoom_to_center(float times)
 {
-    (void)times;
+    auto center = vstart + vrange / 2.f;
+    vrange *= 1.f / times;
+    set_projection();
+    auto new_center = vstart + vrange / 2.f;
+    vstart += center - new_center;
+    set_projection();
 }
 
-void Vspace::zoom_to_point(float times, const glm::vec2& point)
+void Vspace::zoom_to_cursor(float times, const glm::ivec2& cursor_pos)
 {
-    (void)times;
-    (void)point;
+    auto vs_c_pos = get_cursor_vs(cursor_pos);
+    vrange *= 1.f / times;
+    set_projection();
+    auto new_vs_c_pos = get_cursor_vs(cursor_pos);
+    vstart += vs_c_pos - new_vs_c_pos;
+    set_projection();
 }
 
 void Vspace::move(const glm::vec2& vec)
 {
-    (void)vec;
+    vstart += vec;
+    set_projection();
 }
 
-glm::vec2 Vspace::get_mouse_vs() const
+void Vspace::move(const glm::vec2& cursor_pos, const glm::vec2& prev_cursor_pos)
 {
-    return glm::vec2();
+    vstart += get_cursor_vs(prev_cursor_pos) - get_cursor_vs(cursor_pos);
+    set_projection();
 }
 
-void Vspace::render_background(const Texture& texture) const
+glm::vec2 Vspace::get_cursor_vs(const glm::ivec2& cursor_pos) const
+{
+    return pstart + glm::vec2(cursor_pos) * (prange / glm::vec2(io.w, io.h));
+}
+
+void Vspace::render_background(const Texture& texture)
 {
     auto prev_pstart = renderer2d.get_pstart();
     auto prev_prange = renderer2d.get_prange();
@@ -110,7 +129,7 @@ void Vspace::render_background(const Texture& texture) const
     renderer2d.set_projection(prev_pstart, prev_prange);
 }
 
-void Vspace::render_grid(int num_x, int num_y, float border_width, const glm::vec4& color) const
+void Vspace::render_grid(int num_x, int num_y, float border_width, const glm::vec4& color)
 {
     auto prev_pstart = renderer2d.get_pstart();
     auto prev_prange = renderer2d.get_prange();

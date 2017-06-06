@@ -5,4 +5,4 @@ set(SOURCE
 
 add_executable(gravity ${SOURCE})
 target_link_libraries(gravity ngame)
-file(COPY points.sh gravity.sh DESTINATION .)
+file(COPY points.sh gravity.sh ProggyCleanCE.ttf DESTINATION .)

@@ -14,25 +14,29 @@ layout(std430, binding = 1) buffer buff2
     vec2 vels[];
 };
 
-uniform vec2 g_pos;
-uniform bool g_active;
+uniform vec2 gpos;
+uniform bool is_active;
 uniform float dt;
 
-uniform float drag = 1;
-uniform float gravity = 10000;
+uniform float drag_coeff = 0.05;
+uniform float gravity_coeff = 50000;
+uniform float max_gravity = 2000;
 
 void main()
 {
     uint id = gl_GlobalInvocationID.x;
-    vec2 f_drag = -normalize(vels[id]) * pow(length(vels[id]), 2) * drag;
-    poss[id] += vels[id] * dt + 0.5 * f_drag * pow(dt, 2);
-    vels[id] += f_drag * dt;
 
-    if(g_active)
+    vec2 gravity = vec2(0);
+
+    if(is_active)
     {
-        vec2 diff = g_pos - poss[id];
-        vec2 f_gravity = normalize(diff) * (1 / pow(length(diff), 2)) * gravity;
-        poss[id] += 0.5 * f_gravity * pow(dt, 2);
-        vels[id] += f_gravity * dt;
+        vec2 diff = gpos - poss[id];
+        gravity = normalize(diff) * min(max_gravity, (1 / pow(length(diff), 2)) * gravity_coeff);
     }
+
+    vec2 drag = clamp(-normalize(vels[id]) * pow(length(vels[id]), 2) * drag_coeff, -abs(vels[id] / dt), abs(vels[id]));
+
+    vec2 force = gravity + drag;
+    poss[id] += vels[id] * dt + 0.5 * force * pow(dt, 2);
+    vels[id] += force * dt;
 }
