@@ -24,7 +24,6 @@ uniform float gravity = 10000;
 void main()
 {
     uint id = gl_GlobalInvocationID.x;
-
     vec2 f_drag = -normalize(vels[id]) * pow(length(vels[id]), 2) * drag;
     poss[id] += vels[id] * dt + 0.5 * f_drag * pow(dt, 2);
     vels[id] += f_drag * dt;

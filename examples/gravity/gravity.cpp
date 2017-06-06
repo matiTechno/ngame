@@ -29,6 +29,7 @@ Gravity::Gravity():
     for(int i = 0; i < num_particles; ++i)
     {
         poss[i] = glm::vec2(dist_x(rn_eng), dist_y(rn_eng));
+        // avoid some bad stuff when normalizing 0 vector
         vels[i] = glm::vec2(0.000001f);
     }
 
@@ -57,11 +58,12 @@ void Gravity::update()
     // todo: upload proper values
     // Vspace modify functions implementation
     // change g_pos vector to ivec2 (in shader too)
+    // avoid changing sign when adding drag to velocity
     glm::vec2 pos(50.f);
     static float time = 0.f;
-    time += io.frametime;
-    pos.x += 20.f * glm::sin(time);
-    pos.y += 20.f * glm::cos(time);
+    time += io.frametime / 2.f;
+    pos.x += 40.f * glm::sin(time);
+    pos.y += 40.f * glm::cos(time);
     glUniform2f(sh_gravity.get_uni_location("g_pos"), pos.x, pos.y);
     glUniform1i(sh_gravity.get_uni_location("g_active"), 1);
 
