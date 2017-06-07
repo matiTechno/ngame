@@ -5,7 +5,8 @@
 #include "collisions.hpp"
 
 constexpr float Ball::radius;
-constexpr glm::vec2 Ball::init_vel;
+//constexpr glm::vec2 Ball::init_vel;
+const glm::vec2 Ball::init_vel{600.f, 0.f};
 
 void Wall::render(const Renderer2d& renderer) const
 {

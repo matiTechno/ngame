@@ -3,8 +3,11 @@
 #include "sc_master.hpp"
 #include "proto/collisions.hpp"
 
-constexpr glm::vec2 Sc_level::vg_start;
-constexpr glm::vec2 Sc_level::vg_size;
+//constexpr glm::vec2 Sc_level::vg_start;
+//constexpr glm::vec2 Sc_level::vg_size;
+const glm::vec2 Sc_level::vg_start{0.f};
+const glm::vec2 Sc_level::vg_size{1000.f, 800.f};
+const float Sc_level::vg_aspect = vg_size.x / vg_size.y;
 
 Sc_level::Sc_level():
     shader("res/wave.sh", false),

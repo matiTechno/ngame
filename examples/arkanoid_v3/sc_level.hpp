@@ -31,9 +31,12 @@ public:
 
     // vg = virtual game area, minimal visible rect
     // this is optimal resolution
-    static constexpr glm::vec2 vg_start{0.f};
-    static constexpr glm::vec2 vg_size{1000.f, 800.f};
-    static constexpr float vg_aspect = vg_size.x / vg_size.y;
+    //static constexpr glm::vec2 vg_start{0.f};
+    //static constexpr glm::vec2 vg_size{1000.f, 800.f};
+    static const glm::vec2 vg_start;
+    static const glm::vec2 vg_size;
+    //static constexpr float vg_aspect = vg_size.x / vg_size.y;
+    static const float vg_aspect;
 
 private:
     bool vsync = true;

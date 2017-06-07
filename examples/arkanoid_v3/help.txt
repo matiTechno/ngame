@@ -1,0 +1,4 @@
+press g to open imgui window
+a / <-  move left
+d / ->  move right
+SPACE   release ball

@@ -48,7 +48,8 @@ struct Ball
 {
     static constexpr float radius = 20.f;
     static constexpr float max_immune = 0.3f;
-    static constexpr glm::vec2 init_vel{600.f, 0.f};
+    //static constexpr glm::vec2 init_vel{600.f, 0.f};
+    static const glm::vec2 init_vel;
 
     glm::vec2 pos;
     glm::vec2 vel;

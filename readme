@@ -1,0 +1,69 @@
+* from 2017-06-07 most recent changes are at the beginning
+* temp compilation guide at the bottom
+* user guide for examples and projects should be placed in txt file in sub-folders
+* some examples are fullscreen --- to exit them you can use alt + f4
+
+changed todo to readme (this file)
+
+TODO:
+change static constexpr members to const (because of some fckin strange compilation errors on some platforms)
+actually i will try it only with glm::vec2 for now                                                           ---- done
+
+provide user guide for examples && building
+test on many platoforms (ubuntu osx windows ...) if compiles and runs
+compile on windows, update CMakeLists.txt for windows, provide user guide for building on windows
+complete mandelbrot and snake examples
+add ai example (i'm hyped for simulating fish or birds)
+add some fancy documentation stuff (with images) on github
+
+opengl wrapper classes: most important *texture && *shader ---- done
+renderer --- done
+font loading with stbtt ---- done
+sprite ---- done
+text ---- done
+pp_unit ---- done
+
+-- now everything will be much better and simpler
+then
+entity component system with mini reflection and cache friendly mem access
+
+
+font class # ---- done
+text class # ---- done
+renderer2d # ---- done
+remove glad header from some places (huge file) ---- done
+renderer2d memory allocation strategy (avoid memory fragmentation with bigger batches etc) ---- done
+test_scene emitter reserve strategy ---- done
+improve compilation time ---- nvm it's fine (compiling with optimizations enabled takes much more time and I didn't know it)
+clean codebase ---- done
+fix some pp_unit bugs ---- done
+
+--- arkanoid example ---
+intro scene -- some text typing
+end menu -- 'string' press ENTER --> goes to main menu / press R to restart
+main menu scene -- start new game / go fullscreen / quit / volume panel / controls (manual)
+
+@@@@@ D E P E N D E N C I E S ::
+SDL2
+SDL2_mixer
+glm
+GPU with OpenGL 3.3 (4.3 for examples with compute shader) support
+
+on osx with homebrew
+brew install glm sdl2 sdl2_mixer --with-libvorbis --with-smpeg2
+
+on arch linux
+pacman -S sdl2 sdl2_mixer glm
+
+on ubuntu
+apt install libsdl2-dev libsdl2-mixer-dev libglm-dev
+
+on windows
+download glm files
+sdl2 && sdl2_mixer development libraries
+@@@ CMakeLists.txt is not implemented for windows yet
+
+internal:
+stb
+imgui
+glad
