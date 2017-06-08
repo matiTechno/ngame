@@ -27,6 +27,7 @@ protected:
     void zoom_to_cursor(float times, const glm::ivec2& cursor_pos);
     void move(const glm::vec2& cursor_pos, const glm::vec2& prev_cursor_pos);
     void move(const glm::vec2& vec);
+    void set_vs(const glm::vec2& start, const glm::vec2& range);
 
     // convert cursor position from window to projection space
     glm::vec2 get_cursor_vs(const glm::ivec2& cursor_pos) const;

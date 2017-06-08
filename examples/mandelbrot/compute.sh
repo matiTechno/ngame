@@ -1,42 +1,34 @@
-#COMPUTE
-
-#version 430
-
-layout(local_size_x = 1000, local_size_y = 1, local_size_z = 1) in;
-
-layout(std430, binding = 0) buffer buff1
+#VERTEX
+#version 330
+layout(location = 0) in vec4 vertex;
+void main()
 {
-    vec2 poss[];
-};
+    gl_Position = vec4(vertex.xy, 0, 1);
+}
+#FRAGMENT
+#version 330
 
-layout(std430, binding = 1) buffer buff2
-{
-    vec2 vels[];
-};
+out vec4 color;
 
-uniform vec2 gpos;
-uniform bool is_active;
-uniform float dt;
+uniform vec2 start;
+uniform vec2 range;
+uniform ivec2 fb_size;
 
-uniform float drag_coeff = 0.05;
-uniform float gravity_coeff = 50000;
-uniform float max_gravity = 2000;
+uniform int iterations;
 
 void main()
 {
-    uint id = gl_GlobalInvocationID.x;
-
-    vec2 gravity = vec2(0);
-
-    if(is_active)
+    vec2 fcoord = gl_FragCoord.xy;
+    vec2 ncoord = vec2(fcoord.x, -(fcoord.y - fb_size.y));
+    vec2 pos = start + ncoord * (range / fb_size);
+    vec2 z = vec2(0);
+    int it = 0;
+    while(pow(z.x, 2) + pow(z.y, 2) < 4 && it < iterations)
     {
-        vec2 diff = gpos - poss[id];
-        gravity = normalize(diff) * min(max_gravity, (1 / pow(length(diff), 2)) * gravity_coeff);
+        float xtemp = pow(z.x, 2) - pow(z.y, 2) + pos.x;
+        z.y = 2 * z.x * z.y + pos.y;
+        z.x = xtemp;
+        ++it;
     }
-
-    vec2 drag = clamp(-normalize(vels[id]) * pow(length(vels[id]), 2) * drag_coeff, -abs(vels[id] / dt), abs(vels[id]));
-
-    vec2 force = gravity + drag;
-    poss[id] += vels[id] * dt + 0.5 * force * pow(dt, 2);
-    vels[id] += force * dt;
+    color = vec4(vec3(float(it) / iterations), 1);
 }

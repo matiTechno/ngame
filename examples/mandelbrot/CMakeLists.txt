@@ -1,7 +1,9 @@
 set(SOURCE
     main.cpp
-    mandelbrot.cpp)
+    mandelbrot.cpp
+    mandelbrot.hpp
+    compute.sh)
 
 add_executable(mandelbrot ${SOURCE})
 target_link_libraries(mandelbrot ngame)
-file(COPY compute.sh render.sh DESTINATION .)
+file(COPY compute.sh DESTINATION .)

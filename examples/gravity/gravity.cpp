@@ -91,10 +91,7 @@ void Gravity::process_input()
     }
 
     auto hide_cursor = pilot && !imgui;
-    if(hide_cursor)
-        SDL_ShowCursor(0);
-    else
-        SDL_ShowCursor(1);
+    SDL_ShowCursor(!hide_cursor);
 
     if(io.imgui_wants_input || hide_cursor)
     {

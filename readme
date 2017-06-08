@@ -1,3 +1,4 @@
+### all examples are aspect ratio independent (without black edges :) )
 * from 2017-06-07 most recent changes are at the beginning
 * temp compilation guide at the bottom
 * user guide for examples and projects should be placed in txt file in sub-folders
@@ -6,13 +7,16 @@
 changed todo to readme (this file)
 
 TODO:
+add automatic building
+don't use friend declaration to access opengl objects ids
 change static constexpr members to const (because of some fckin strange compilation errors on some platforms)
 actually i will try it only with glm::vec2 for now                                                           ---- done
 
 provide user guide for examples && building
 test on many platoforms (ubuntu osx windows ...) if compiles and runs
 compile on windows, update CMakeLists.txt for windows, provide user guide for building on windows
-complete mandelbrot and snake examples
+complete mandelbrot ---- done
+and snake examples
 add ai example (i'm hyped for simulating fish or birds)
 add some fancy documentation stuff (with images) on github
 

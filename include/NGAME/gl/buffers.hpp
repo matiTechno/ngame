@@ -22,6 +22,7 @@ public:
     void bind(GLenum target) const;
 
     friend class Gravity;
+    friend class Mandelbrot;
 };
 
 class FBO: public GL_base

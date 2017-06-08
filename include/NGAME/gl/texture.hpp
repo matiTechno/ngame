@@ -12,6 +12,8 @@ public:
     Texture(const std::string& filename, bool sRGB = false, GLsizei levels = 1);
     // binds texture to GL_TEXTURE_2D
     Texture(GLenum internal_format, GLsizei width, GLsizei height, GLsizei levels = 1);
+    // only generates name (no bind call)
+    Texture();
 
     void bind(GLenum target = GL_TEXTURE_2D, GLuint unit = 0) const;
     glm::ivec2 get_size() const;
@@ -20,10 +22,7 @@ public:
 private:
     glm::ivec2 size;
     static std::pair<GLuint, GLuint> bound_id;
-
-    // only generates name (no bind call)
-    Texture();
- };
+};
 
 class Sampler: public GL_base
 {

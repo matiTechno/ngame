@@ -25,6 +25,13 @@ glm::vec2 Vspace::get_pstart() const
 glm::vec2 Vspace::get_prange() const
 {return prange;}
 
+void Vspace::set_vs(const glm::vec2& start, const glm::vec2& range)
+{
+    vstart = start;
+    vrange = range;
+    set_projection();
+}
+
 void Vspace::start2()
 {}
 
