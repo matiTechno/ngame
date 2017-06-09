@@ -5,9 +5,9 @@
 #include <NGAME/imgui.h>
 #include <glm/exponential.hpp>
 
-constexpr float mid_x = -1.283918f, mid_y = 0.427249f,
+constexpr float mid_x = -1.786439f, mid_y = 0.f,
 min_range_x = 0.0001f,
-range_x = 3.5f, range_y = 2.f,
+range_x = 17.f, range_y = 9.f,
 start_x = mid_x - range_x / 2.f, start_y = mid_y - range_y / 2.f;
 
 Mandelbrot::Mandelbrot():
@@ -66,7 +66,7 @@ void Mandelbrot::render()
         accumulator += io.frametime;
         while(accumulator >= 0.01666f)
         {
-            zoom_to_center(sign * 1.005f);
+            zoom_to_center(glm::pow(1.005f, sign));
             accumulator -= 0.01666f;
         }
         if(vrange.x < min_range_x)
