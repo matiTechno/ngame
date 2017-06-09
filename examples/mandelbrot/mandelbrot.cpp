@@ -57,7 +57,7 @@ void Mandelbrot::process_input()
     iterations += add_to_it;
 }
 
-void Mandelbrot::render()
+void Mandelbrot::render2()
 {
     if(pilot)
     {

@@ -31,7 +31,6 @@ class Gol: public Vspace
 public:
     Gol();
 
-    void render() override;
 
     static constexpr float grid_width = 1.f;
     static constexpr float timestep = 0.1f;
@@ -42,4 +41,6 @@ private:
     Shader sh_wave;
     float time = 0.f;
     float accumulator = 0.f;
+
+    void render2() override;
 };

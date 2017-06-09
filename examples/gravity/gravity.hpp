@@ -14,8 +14,6 @@ public:
 
     void update() override;
 
-    void render() override;
-
 private:
     Shader sh_points, sh_gravity;
     VAO vao;
@@ -29,4 +27,6 @@ private:
     float zoom_coeff = 1.05f;
     glm::ivec2 prev_cursor_pos;
     Font font;
+
+    void render2() override;
 };

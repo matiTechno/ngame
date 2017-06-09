@@ -138,7 +138,7 @@ void Gravity::update()
     glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
 }
 
-void Gravity::render()
+void Gravity::render2()
 {
     sh_points.bind();
     auto proj = glm::ortho(get_pstart().x, get_pstart().x + get_prange().x,

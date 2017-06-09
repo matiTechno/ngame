@@ -6,7 +6,20 @@ class Texture;
 
 // vspace = virtual space (minimal visible rect)
 // evolved from arkanoid example
-// projection is set at the beginning of every frame
+
+// implement start2() as start function
+// if fb_size changes:
+// * vstart
+// * vrange
+// * pstart
+// * prange
+//
+// are updated in start() function before
+// any other function is called
+
+// implement render2() as render function
+// projection is set in renderer2d just before render2() invocation
+
 class Vspace: public Scene
 {
 public:
@@ -14,6 +27,7 @@ public:
     Vspace() = default;
 
     void start() override final;
+    void render() override final;
 
 protected:
     // virtual space
@@ -43,12 +57,15 @@ protected:
     // renders grid inside vspace
     // border is inside grid rect
     // to make grid transparent render it with pp_unit (see game_of_life example)
+    // border_width is in pixels
     void render_grid(int num_x, int num_y, float border_width, const glm::vec4& color);
 
 private:
     glm::vec2 vstart, vrange;
     glm::vec2 pstart, prange;
 
+    // invoked at the end of render()
+    virtual void render2();
     // invoked at the end of start()
     virtual void start2();
 

@@ -20,7 +20,7 @@ Gol::Gol():
    SDL_ShowCursor(0);
 }
 
-void Gol::render()
+void Gol::render2()
 {
     static constexpr float time_step = 0.1f;
     accumulator += io.frametime;

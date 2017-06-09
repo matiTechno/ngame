@@ -32,6 +32,15 @@ void Vspace::set_vs(const glm::vec2& start, const glm::vec2& range)
     set_projection();
 }
 
+void Vspace::render2()
+{}
+
+void Vspace::render()
+{
+    renderer2d.set_projection(pstart, prange);
+    render2();
+}
+
 void Vspace::start2()
 {}
 
@@ -54,8 +63,6 @@ void Vspace::set_projection()
         prange.y = prange.x / io.aspect;
 
     pstart = vstart - (prange - vrange) / 2.f;
-
-    renderer2d.set_projection(pstart, prange);
 }
 
 void Vspace::zoom_to_center(float times)

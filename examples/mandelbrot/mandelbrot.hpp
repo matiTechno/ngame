@@ -11,8 +11,6 @@ public:
 
     void process_input() override;
 
-    void render() override;
-
 private:
     Shader shader;
     int iterations = 150;
@@ -23,4 +21,6 @@ private:
     float zoom_coeff = 1.1f;
     glm::ivec2 prev_cursor_pos;
     int sign = 1;
+
+    void render2() override;
 };

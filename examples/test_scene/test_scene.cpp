@@ -36,11 +36,11 @@ Test_scene::Test_scene():
 
 void Test_scene::process_input()
 {
+    if(io.imgui_wants_input)
+        return;
+
     for(auto& event: io.events)
     {
-        if(io.imgui_wants_input)
-            return;
-
         if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
             set_new_scene<Menu>(font, sh_wave);
 
