@@ -11,6 +11,7 @@ class Vspace: public Scene
 {
 public:
     Vspace(float x, float y, float w, float h);
+    Vspace() = default;
 
     void start() override final;
 
