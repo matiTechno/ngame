@@ -21,6 +21,7 @@ class PP_unit
 public:
     PP_unit(int w, int h);
 
+    // you certainly want to call renderer2d.flush() before this function
     void start() const;
 
     void render(bool end, const Shader& shader) const;

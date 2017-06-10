@@ -3,9 +3,12 @@
 #include "scene.hpp"
 #include <glm/vec2.hpp>
 class Texture;
+#include <NGAME/gl/shader.hpp>
 
 // vspace = virtual space (minimal visible rect)
 // evolved from arkanoid example
+// only works as scene with size == fb_size (it's easy to fix but I don't have
+// a good reason to do it)
 
 // implement start2() as start function
 // if fb_size changes:
@@ -47,6 +50,9 @@ protected:
     // convert cursor position from window to projection space
     glm::vec2 get_cursor_vs(const glm::ivec2& cursor_pos) const;
 
+    // you certainly want to call renderer2d.flush() before
+    // these functions (they change projection in renderer2d but restore it on return)
+
     // renders centered texture
     // if texture.size < fb_size (framebuffer)
     // texture is scaled
@@ -54,10 +60,11 @@ protected:
     // only part of texture is used with size = fb_size
     void render_background(const Texture& texture);
 
-    // renders grid inside vspace
-    // border is inside grid rect
-    // to make grid transparent render it with pp_unit (see game_of_life example)
-    // border_width is in pixels
+    // renders grid in vspace area
+    // border is contained inside grid rect
+    // to make grid transparent render it with pp_unit
+    // (see game of life example)
+    //                                           in pixels
     void render_grid(int num_x, int num_y, float border_width, const glm::vec4& color);
 
 private:

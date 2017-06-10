@@ -14,6 +14,10 @@ enum class Sampl_type
     nearest
 };
 
+// render functions save sprite data to internal buffer
+// flush() does the actual render call to opengl
+// projection is not set per batch so you probably want to call
+// flush() before changing it
 class Renderer2d
 {
 public:

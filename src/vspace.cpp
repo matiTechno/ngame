@@ -8,6 +8,8 @@
 #define NGAME_BLEND
 #include <NGAME/glad.h>
 
+#include <NGAME/pp_unit.hpp>
+
 Vspace::Vspace(float x, float y, float w, float h):
     vstart(x, y),
     vrange(w, h)

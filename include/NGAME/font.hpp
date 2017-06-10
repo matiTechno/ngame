@@ -13,9 +13,6 @@ struct Glyph
 class Font
 {
 public:
-    Font(std::map<int, Glyph>&& glyphs, Texture&& atlas,
-         int size_px, int linespace, int ascent, int descent);
-
     const Glyph& get_glyph(int code) const;
 
     const Texture& get_atlas() const;
@@ -27,6 +24,10 @@ public:
     int get_descent() const;
 
 private:
+    friend class Font_loader;
+    Font(std::map<int, Glyph>&& glyphs, Texture&& atlas,
+         int size_px, int linespace, int ascent, int descent);
+
     std::map<int, Glyph> glyphs;
 
     Texture atlas;
