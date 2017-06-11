@@ -48,7 +48,7 @@ void Snake::process_input()
                 vel.x = 0;
             }
             else if(key == SDLK_ESCAPE)
-                set_new_scene<Menu>(true, score, font);
+                set_new_scene<Menu>(*this, true, score, font);
         }
     }
 }
@@ -85,7 +85,7 @@ void Snake::update()
 
             for(int i = 1; i < snake_nodes.size(); ++i)
                 if(is_coll(head.pos, snake_nodes[i].pos))
-                    set_new_scene<Menu>(false, score, font);
+                    set_new_scene<Menu>(*this, false, score, font);
 
             if(is_coll(head.pos, food_pos))
             {

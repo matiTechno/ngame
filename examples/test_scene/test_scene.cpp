@@ -135,8 +135,8 @@ void Emitter::update(float dt)
     }
 
     accumulator += dt;
-    if(accumulator > 0.020)
-        accumulator = 0.020;
+    if(accumulator > 0.020f)
+        accumulator = 0.020f;
     while(accumulator > spawn_time)
     {
         spawn();

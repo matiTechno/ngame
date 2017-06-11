@@ -14,6 +14,8 @@ public:
     glm::vec4 get_bbox() const;
     void set_pixel_size(int size);
 
+    // pos.y = pos.y of the baseline
+    // you can use font.ascent to calculate pos.y of the text bbox
     glm::vec2 pos;
     float scale = 1.f;
     // radians

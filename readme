@@ -1,14 +1,14 @@
 ### all examples are aspect ratio independent (without black edges :) )
 * from 2017-06-07 most recent changes are at the beginning
 * temp compilation guide at the bottom
-* user guide for examples and projects should be placed in txt file in sub-folders
+* user guide for examples and projects should be placed in txt help.file in sub-folder
 * some examples are fullscreen --- to exit them you can use alt + f4
 
 changed todo to readme (this file)
 
 TODO:
-complete snake example
-check all files correctness with clang parser and from libngame perspective
+complete snake example ---- done
+check all files correctness with clang parser and from libngame perspective ---- done
 add automatic building
 don't use friend declaration to access opengl objects ids
 change static constexpr members to const (because of some fckin strange compilation errors on some platforms)
@@ -18,7 +18,7 @@ provide user guide for examples && building
 test on many platoforms (ubuntu osx windows ...) if compiles and runs
 compile on windows, update CMakeLists.txt for windows, provide user guide for building on windows
 complete mandelbrot ---- done
-and snake examples
+and snake examples ---- done
 add ai example (i'm hyped for simulating fish or birds)
 add some fancy documentation stuff (with images) on github
 
@@ -54,6 +54,12 @@ SDL2
 SDL2_mixer
 glm
 GPU with OpenGL 3.3 (4.3 for examples with compute shader) support
+
+cd ngame
+mkdir build
+cd build
+cmake ..
+make -j4
 
 on osx with homebrew
 brew install glm sdl2 sdl2_mixer --with-libvorbis --with-smpeg2

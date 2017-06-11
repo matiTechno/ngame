@@ -1,1 +1,7 @@
-ESC - open snake menu
+ESC - open menu
+<- / a   left
+-> / d   right
+^ / w    up
+v / s    down
+
+ENTER / SPACE select menu option
