@@ -27,6 +27,9 @@ private:
     float zoom_coeff = 1.05f;
     glm::ivec2 prev_cursor_pos;
     Font font;
+    const float dt = 0.01666f;
+    float accumulator = 0.f;
+    float time = 0.f;
 
     void render2() override;
 };
