@@ -116,22 +116,19 @@ void Gravity::process_input()
 void Gravity::update()
 {
     sh_gravity.bind();
-    accumulator += io.frametime;
-    while(accumulator >= dt)
+    glUniform1f(sh_gravity.get_uni_location("dt"), io.frametime);
+
+    if(pilot)
     {
-        accumulator -= dt;
-        glUniform1f(sh_gravity.get_uni_location("dt"), dt);
-        if(pilot)
-        {
-            time += dt;
-            glm::vec2 pos(50.f);
-            pos.x += 40.f * glm::sin(time);
-            pos.y += 40.f * glm::cos(time);
-            glUniform2f(sh_gravity.get_uni_location("gpos"), pos.x, pos.y);
-            glUniform1i(sh_gravity.get_uni_location("is_active"), 1);
-        }
+        glm::vec2 pos(50.f);
+        static float time = 0.f;
+        time += io.frametime / 1.15f;
+        pos.x += 40.f * glm::sin(time);
+        pos.y += 40.f * glm::cos(time);
+        glUniform2f(sh_gravity.get_uni_location("gpos"), pos.x, pos.y);
+        glUniform1i(sh_gravity.get_uni_location("is_active"), 1);
     }
-    if(!pilot)
+    else
     {
         auto pos = get_cursor_vs(io.cursor_pos);
         glUniform2f(sh_gravity.get_uni_location("gpos"), pos.x, pos.y);

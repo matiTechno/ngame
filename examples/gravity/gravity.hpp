@@ -5,6 +5,13 @@
 #include <NGAME/gl/buffers.hpp>
 #include <NGAME/font.hpp>
 
+// simulation is not using fixed timestep
+// (it behaves differently with vsync on and off)
+// which is not good but does not cause any
+// visual artifacts
+// the best results are achieved with dt = 16.666 ms
+// (vsync on and frame execution under dt)
+
 class Gravity: public Vspace
 {
 public:
@@ -27,9 +34,6 @@ private:
     float zoom_coeff = 1.05f;
     glm::ivec2 prev_cursor_pos;
     Font font;
-    const float dt = 0.01666f;
-    float accumulator = 0.f;
-    float time = 0.f;
 
     void render2() override;
 };
