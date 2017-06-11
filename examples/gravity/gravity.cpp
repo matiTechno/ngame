@@ -122,7 +122,7 @@ void Gravity::update()
     {
         glm::vec2 pos(50.f);
         static float time = 0.f;
-        time += io.frametime / 1.15f;
+        time += io.frametime / 1.1f;
         pos.x += 40.f * glm::sin(time);
         pos.y += 40.f * glm::cos(time);
         glUniform2f(sh_gravity.get_uni_location("gpos"), pos.x, pos.y);
