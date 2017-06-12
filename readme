@@ -4,6 +4,10 @@
 * user guide for examples and projects should be placed in txt help.file in sub-folder
 * some examples are fullscreen --- to exit them you can use alt + f4
 
+I will try to play with 3d
+* added tiny obj loader to the project
+main goal is to learn animation
+
 changed todo to readme (this file)
 
 TODO:
@@ -79,3 +83,4 @@ internal:
 stb
 imgui
 glad
+tiny_obj_loader

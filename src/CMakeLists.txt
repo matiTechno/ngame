@@ -18,6 +18,8 @@ set(SOURCE
     font_loader.cpp
     blend.cpp
     vspace.cpp
+    3d/renderer3d.cpp
+    3d/model.cpp
     )
 
 add_library(ngame ${SOURCE})
