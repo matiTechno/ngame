@@ -48,7 +48,7 @@ void Snake::process_input()
                 vel.x = 0;
             }
             else if(key == SDLK_ESCAPE)
-                set_new_scene<Menu>(*this, true, score, font);
+                set_new_scene<Menu>(*this, true, snake_nodes.size() - 1, font);
         }
     }
 }
@@ -85,11 +85,10 @@ void Snake::update()
 
             for(int i = 1; i < snake_nodes.size(); ++i)
                 if(is_coll(head.pos, snake_nodes[i].pos))
-                    set_new_scene<Menu>(*this, false, score, font);
+                    set_new_scene<Menu>(*this, false, snake_nodes.size() - 1, font);
 
             if(is_coll(head.pos, food_pos))
             {
-                ++score;
                 sample.play();
                 spawn_food();
                 snake_nodes.push_back(Node{head.pos, static_cast<int>(snake_nodes.size())});
@@ -136,7 +135,6 @@ again:
 
 void Snake::init_level()
 {
-    score = 0;
     accumulator = 0.f;
     snake_nodes.clear();
     std::uniform_int_distribution<int> dist(0, num_grids - 1);

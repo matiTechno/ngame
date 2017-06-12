@@ -31,7 +31,6 @@ private:
 
     Sample sample;
     Font font;
-    int score;
     float accumulator;
     std::mt19937 rn_eng;
     glm::ivec2 food_pos;
