@@ -10,6 +10,7 @@ class Renderer2d;
 class PP_unit;
 class Scene;
 class Font_loader;
+class Renderer3d;
 #include <glm/vec2.hpp>
 
 struct IO
@@ -71,6 +72,7 @@ private:
     std::unique_ptr<Renderer2d> renderer2d;
     std::unique_ptr<PP_unit> pp_unit;
     std::unique_ptr<Font_loader> font_loader;
+    std::unique_ptr<Renderer3d> renderer3d;
     std::vector<std::unique_ptr<Scene>> scenes;
     SDL_Window* win;
     mutable bool should_close = false;

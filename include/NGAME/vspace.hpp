@@ -3,7 +3,6 @@
 #include "scene.hpp"
 #include <glm/vec2.hpp>
 class Texture;
-#include <NGAME/gl/shader.hpp>
 
 // vspace = virtual space (minimal visible rect)
 // evolved from arkanoid example

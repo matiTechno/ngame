@@ -1,13 +1,16 @@
 #pragma once
-#include <NGAME/gl/shader.hpp>
-class Model;
+#include "../gl/shader.hpp"
+class Inst3d;
+class Camera;
 
 class Renderer3d
 {
 public:
     Renderer3d();
 
-    void render(const Model& model);
+    void render(const Inst3d& instance) const;
+
+    void set_camera(const Camera& camera) const;
 
 private:
     Shader shader;

@@ -5,6 +5,7 @@ class Renderer2d;
 struct IO;
 class PP_unit;
 class Font_loader;
+class Renderer3d;
 
 // virtual functions are executed in the same order as presented
 // data in IO structure is ready to use in all functions
@@ -34,6 +35,7 @@ protected:
     const Renderer2d& renderer2d;
     const PP_unit& pp_unit;
     const Font_loader& font_loader;
+    const Renderer3d& renderer3d;
     glm::ivec2 pos;
     glm::ivec2 size;
 

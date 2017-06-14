@@ -12,6 +12,7 @@
 #include <NGAME/del.hpp>
 #include <NGAME/font_loader.hpp>
 #include <NGAME/blend.hpp>
+#include <NGAME/3d/renderer3d.hpp>
 
 const App* App::handle = nullptr;
 
@@ -84,6 +85,7 @@ App::App(int width, int height, const char *title, bool handle_quit, int gl_majo
     SDL_GL_GetDrawableSize(win, &io.w, &io.h);
     pp_unit = std::make_unique<PP_unit>(io.w, io.h);
     font_loader = std::make_unique<Font_loader>();
+    renderer3d = std::make_unique<Renderer3d>();
 
     glEnable(GL_BLEND);
     Blend::set_default();
@@ -157,6 +159,7 @@ void App::render() {
 
     pp_unit->set_new_size(io.w, io.h);
     glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
 
     scenes_to_render.clear();
     for(auto it = scenes.rbegin(); it != scenes.rend(); ++it)

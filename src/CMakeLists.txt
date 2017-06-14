@@ -20,6 +20,7 @@ set(SOURCE
     vspace.cpp
     3d/renderer3d.cpp
     3d/model.cpp
+    3d/camera.cpp
     )
 
 add_library(ngame ${SOURCE})

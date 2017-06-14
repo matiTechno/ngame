@@ -6,6 +6,7 @@ Scene::Scene():
     renderer2d(*App::handle->renderer2d),
     pp_unit(*App::handle->pp_unit),
     font_loader(*App::handle->font_loader),
+    renderer3d(*App::handle->renderer3d),
     pos(0, 0),
     size(io.w, io.h),
     should_close(App::handle->should_close)
