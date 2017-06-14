@@ -1,7 +1,6 @@
 #pragma once
 
 #include <NGAME/scene.hpp>
-#include <NGAME/3d/camera.hpp>
 #include <NGAME/3d/model.hpp>
 #include <NGAME/3d/inst3d.hpp>
 
@@ -14,6 +13,5 @@ public:
 
 private:
     Model model;
-    Camera camera;
     Inst3d inst1;
 };

@@ -18,9 +18,11 @@ set(SOURCE
     font_loader.cpp
     blend.cpp
     vspace.cpp
+    shaders/sprite.sh
     3d/renderer3d.cpp
     3d/model.cpp
     3d/camera.cpp
+    3d/3d.sh
     )
 
 add_library(ngame ${SOURCE})

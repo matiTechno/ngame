@@ -4,6 +4,7 @@ set(SOURCE
     sc_level.cpp
     proto/objects.cpp
     proto/collisions.cpp
+    res/wave.sh
     # temp, only to use emitter class
     ../test_scene/test_scene.cpp
     ../test_scene/menu.cpp
