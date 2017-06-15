@@ -3,6 +3,7 @@
 #include <NGAME/scene.hpp>
 #include <NGAME/3d/model.hpp>
 #include <NGAME/3d/inst3d.hpp>
+#include <NGAME/font.hpp>
 
 class Test_scene: public Scene
 {
@@ -14,4 +15,6 @@ public:
 private:
     Model model;
     Inst3d inst1;
+    Font font;
+    bool vsync = true;
 };

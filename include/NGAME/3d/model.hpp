@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+// only works with triangle faces
 class Model
 {
 public:

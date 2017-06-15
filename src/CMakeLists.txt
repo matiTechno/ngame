@@ -23,6 +23,8 @@ set(SOURCE
     3d/model.cpp
     3d/camera.cpp
     3d/3d.sh
+    3d/light.sh
+    3d/cube.hpp
     )
 
 add_library(ngame ${SOURCE})

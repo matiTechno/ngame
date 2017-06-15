@@ -9,6 +9,7 @@
 struct Vertex
 {
     glm::vec3 pos;
+    glm::vec3 normal;
 };
 
 Model::Model(const std::string& filename)
@@ -43,8 +44,11 @@ Model::Model(const std::string& filename)
                 auto vx = attrib.vertices[3 * id.vertex_index + 0];
                 auto vy = attrib.vertices[3 * id.vertex_index + 1];
                 auto vz = attrib.vertices[3 * id.vertex_index + 2];
+                auto nx = attrib.normals[3 * id.normal_index + 0];
+                auto ny = attrib.normals[3 * id.normal_index + 1];
+                auto nz = attrib.normals[3 * id.normal_index + 2];
 
-                vertices.push_back({{vx, vy, vz}});
+                vertices.push_back({{vx, vy, vz}, {nx, ny, nz}});
             }
             index_offset += num;
         }
@@ -54,8 +58,11 @@ Model::Model(const std::string& filename)
         mesh.vbo.bind(GL_ARRAY_BUFFER);
         glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
         mesh.vao.bind();
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
         glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                              reinterpret_cast<const void*>(offsetof(Vertex, normal)));
+        glEnableVertexAttribArray(1);
         vertices.clear();
     }
 }

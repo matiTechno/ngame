@@ -4,19 +4,31 @@
 #include <NGAME/3d/model.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <NGAME/3d/camera.hpp>
+#include "cube.hpp"
 
 Renderer3d::Renderer3d():
     shader(
         #include "3d.sh"
-        , "3d.sh"
-        )
-{}
+        , "3d.sh"),
+    shader_light(
+        #include "light.sh"
+        , "light.sh")
+{
+    vbo_light.bind(GL_ARRAY_BUFFER);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
+    vao_light.bind();
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+}
 
 void Renderer3d::set_camera(const Camera& camera) const
 {
     shader.bind();
     glUniformMatrix4fv(shader.get_uni_location("proj"), 1, GL_FALSE, &camera.proj[0][0]);
     glUniformMatrix4fv(shader.get_uni_location("view"), 1, GL_FALSE, &camera.view[0][0]);
+    shader_light.bind();
+    glUniformMatrix4fv(shader_light.get_uni_location("proj"), 1, GL_FALSE, &camera.proj[0][0]);
+    glUniformMatrix4fv(shader_light.get_uni_location("view"), 1, GL_FALSE, &camera.view[0][0]);
 }
 
 void Renderer3d::render(const Inst3d& instance) const
@@ -27,6 +39,7 @@ void Renderer3d::render(const Inst3d& instance) const
 
     shader.bind();
     glUniform3fv(shader.get_uni_location("u_color"), 1, &instance.color[0]);
+    //glUniform1f(shader.get_uni_location("shininess"), instance.shininess);
 
     glm::mat4 model(1.f);
     model = glm::translate(model, instance.pos);
@@ -38,11 +51,32 @@ void Renderer3d::render(const Inst3d& instance) const
 
     glUniformMatrix4fv(shader.get_uni_location("model"), 1, GL_FALSE, &model[0][0]);
 
-    // upload uniforms
     for(auto& mesh: instance.model->meshes)
     {
         mesh.vao.bind();
         glDrawArrays(GL_TRIANGLES, 0, mesh.num_vertices);
+    }
+    glDisable(GL_DEPTH_TEST);
+}
+
+void Renderer3d::set_light(const Light& light) const
+{
+    ++active_l;
+    assert(active_l < lights.size() - 1);
+    lights[active_l] = light;
+}
+
+void Renderer3d::render_lights() const
+{
+    glEnable(GL_DEPTH_TEST);
+    shader_light.bind();
+    vao_light.bind();
+    for(int i = 0; i < active_l + 1; ++i)
+    {
+        glUniform1f(shader_light.get_uni_location("scale"), 0.1f);
+        glUniform3fv(shader_light.get_uni_location("translate"), 1, &lights[i].pos[0]);
+        glUniform3fv(shader_light.get_uni_location("u_color"), 1, &lights[i].color[0]);
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(cube) / 3 * sizeof(float));
     }
     glDisable(GL_DEPTH_TEST);
 }

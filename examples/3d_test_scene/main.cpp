@@ -6,7 +6,7 @@ int main()
 {
     try
     {
-        App app(600, 600, "3d", true, 3, 3);
+        App app(600, 600, "3d", true, 3, 3, SDL_WINDOW_FULLSCREEN_DESKTOP);
         app.start<Test_scene>();
     }
     catch(const std::exception& e)
