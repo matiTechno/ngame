@@ -71,8 +71,9 @@ void Renderer3d::set_light(const Light& light) const
     shader.bind();
     auto name = "lights[" + std::to_string(active_l) + ']';
     glUniform1i(shader.get_uni_location("num_lights"), active_l + 1);
-    glUniform3fv(shader.get_uni_location(name + ".pos"), 1, &lights[active_l].pos.x);
-    glUniform3fv(shader.get_uni_location(name + ".color"), 1, &lights[active_l].color.x);
+    glUniform3fv(shader.get_uni_location(name + ".pos"), 1, &light.pos.x);
+    glUniform3fv(shader.get_uni_location(name + ".color"), 1, &light.color.x);
+    glUniform1f(shader.get_uni_location(name + ".attenuation"), light.attenuation);
 }
 
 void Renderer3d::render_lights() const
@@ -82,7 +83,7 @@ void Renderer3d::render_lights() const
     vao_light.bind();
     for(int i = 0; i < active_l + 1; ++i)
     {
-        glUniform1f(shader_light.get_uni_location("scale"), 0.1f);
+        glUniform1f(shader_light.get_uni_location("scale"), lights[i].scale);
         glUniform3fv(shader_light.get_uni_location("translate"), 1, &lights[i].pos[0]);
         glUniform3fv(shader_light.get_uni_location("u_color"), 1, &lights[i].color[0]);
         glDrawArrays(GL_TRIANGLES, 0, sizeof(cube) / 3 * sizeof(float));

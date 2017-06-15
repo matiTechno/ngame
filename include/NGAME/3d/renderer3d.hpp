@@ -9,7 +9,10 @@ class Camera;
 struct Light
 {
     glm::vec3 pos;
-    glm::vec3 color;
+    glm::vec3 color{1.f, 1.f, 1.f};
+    // cube model has (1, 1, 1) size
+    float scale = 0.1f;
+    float attenuation = 0.7f;
 };
 
 class Renderer3d
@@ -21,8 +24,9 @@ public:
 
     void set_camera(const Camera& camera) const;
 
-    // this will set active_l to -1
+    // sets active_l to -1
     // call this after rendering all 3d instances
+    // warning: does not use instancing
     void render_lights() const;
 
     // call this every frame
@@ -33,7 +37,7 @@ private:
     Shader shader_light;
     VAO vao_light;
     BO vbo_light;
-    // in shader it is set to 20
-    mutable std::array<Light, 20> lights;
+    // in shader it is set to 100
+    mutable std::array<Light, 100> lights;
     mutable int active_l = -1;
 };

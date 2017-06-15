@@ -32,9 +32,10 @@ struct Light
 {
     vec3 pos;
     vec3 color;
+    float attenuation;
 };
 
-uniform Light lights[20];
+uniform Light lights[100];
 uniform int num_lights = 0;
 
 struct Material
@@ -62,7 +63,9 @@ void main()
             vec3 halfway = normalize(frag_to_light + frag_to_cam);
             vec3 specular = pow(max(dot(nnorm, halfway), 0), mat.shininess) * mat.specular;
 
-            col3 += (mat.ambient + diffuse + specular) * lights[i].color;
+            float distance = length(wpos - lights[i].pos);
+
+            col3 += (mat.ambient + diffuse + specular) * lights[i].color / (1 + distance * lights[i].attenuation);
         }
     color = vec4(col3, 1);
 }
