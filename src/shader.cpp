@@ -40,14 +40,16 @@ Shader::Shader(const std::string& filename, bool hot_reload):
         std::cout << "shader, id_name = " + id_name + ": last_write_time failed" << std::endl;
 #endif
 
-    make_program(load_source_from_file(filename));
+    if(!make_program(load_source_from_file(filename)))
+        throw std::exception();
 }
 
 Shader::Shader(const std::string& source, const char* id_name):
     Shader()
 {
     this->id_name = id_name;
-    make_program(source);
+    if(!make_program(source))
+        throw std::exception();
 }
 
 void Shader::bind() const
@@ -171,7 +173,7 @@ struct CD
     std::string name;
 };
 
-void Shader::make_program(const std::string& source) const
+bool Shader::make_program(const std::string& source) const
 {
     std::vector<Sh_part> sh_parts;
     sh_parts.reserve(3);
@@ -221,7 +223,7 @@ void Shader::make_program(const std::string& source) const
     }
 
     if(comp_err)
-        return;
+        return false;
 
     for(auto& sh_part: sh_parts)
         glAttachShader(id, sh_part.id);
@@ -232,9 +234,10 @@ void Shader::make_program(const std::string& source) const
         glDetachShader(id, sh_part.id);
 
     if(is_error(true, id, GL_LINK_STATUS, "shader, id_name = " + id_name + ": linking failed"))
-        return;
+        return false;
 
     std::cout << "shader, id_name = " + id_name + ": linking succeed" << std::endl;
 
     load_uni_locations();
+    return true;
 }

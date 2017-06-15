@@ -12,9 +12,6 @@ struct Light
     glm::vec3 color;
 };
 
-// Light api is temp and only for
-// debugging purposes
-
 class Renderer3d
 {
 public:
@@ -24,8 +21,11 @@ public:
 
     void set_camera(const Camera& camera) const;
 
+    // this will set active_l to -1
+    // call this after rendering all 3d instances
     void render_lights() const;
 
+    // call this every frame
     void set_light(const Light& light) const;
 
 private:
@@ -33,6 +33,7 @@ private:
     Shader shader_light;
     VAO vao_light;
     BO vbo_light;
+    // in shader it is set to 20
     mutable std::array<Light, 20> lights;
     mutable int active_l = -1;
 };

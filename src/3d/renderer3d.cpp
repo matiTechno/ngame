@@ -26,6 +26,7 @@ void Renderer3d::set_camera(const Camera& camera) const
     shader.bind();
     glUniformMatrix4fv(shader.get_uni_location("proj"), 1, GL_FALSE, &camera.proj[0][0]);
     glUniformMatrix4fv(shader.get_uni_location("view"), 1, GL_FALSE, &camera.view[0][0]);
+    glUniform3fv(shader.get_uni_location("cam_pos"), 1, &camera.pos[0]);
     shader_light.bind();
     glUniformMatrix4fv(shader_light.get_uni_location("proj"), 1, GL_FALSE, &camera.proj[0][0]);
     glUniformMatrix4fv(shader_light.get_uni_location("view"), 1, GL_FALSE, &camera.view[0][0]);
@@ -38,8 +39,10 @@ void Renderer3d::render(const Inst3d& instance) const
     glEnable(GL_DEPTH_TEST);
 
     shader.bind();
-    glUniform3fv(shader.get_uni_location("u_color"), 1, &instance.color[0]);
-    //glUniform1f(shader.get_uni_location("shininess"), instance.shininess);
+    glUniform3fv(shader.get_uni_location("mat.ambient"), 1, &instance.mat.ambient[0]);
+    glUniform3fv(shader.get_uni_location("mat.diffuse"), 1, &instance.mat.diffuse[0]);
+    glUniform3fv(shader.get_uni_location("mat.specular"), 1, &instance.mat.specular[0]);
+    glUniform1f(shader.get_uni_location("mat.shininess"), instance.mat.shininess);
 
     glm::mat4 model(1.f);
     model = glm::translate(model, instance.pos);
@@ -64,6 +67,12 @@ void Renderer3d::set_light(const Light& light) const
     ++active_l;
     assert(active_l < lights.size() - 1);
     lights[active_l] = light;
+
+    shader.bind();
+    auto name = "lights[" + std::to_string(active_l) + ']';
+    glUniform1i(shader.get_uni_location("num_lights"), active_l + 1);
+    glUniform3fv(shader.get_uni_location(name + ".pos"), 1, &lights[active_l].pos.x);
+    glUniform3fv(shader.get_uni_location(name + ".color"), 1, &lights[active_l].color.x);
 }
 
 void Renderer3d::render_lights() const
@@ -79,4 +88,6 @@ void Renderer3d::render_lights() const
         glDrawArrays(GL_TRIANGLES, 0, sizeof(cube) / 3 * sizeof(float));
     }
     glDisable(GL_DEPTH_TEST);
+
+    active_l = -1;
 }

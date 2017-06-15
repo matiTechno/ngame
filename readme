@@ -4,6 +4,9 @@
 * user guide for examples and projects should be placed in txt help.file in sub-folder
 * some examples are fullscreen --- to exit them you can use alt + f4
 
+3d api is under development. it's not gamma correct and stuff.
+for animations I will need to change tinyobjloader to assimp
+
 I will try to play with 3d
 * added tiny obj loader to the project
 main goal is to learn animation

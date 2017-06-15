@@ -5,4 +5,4 @@ set(SOURCE
 
 add_executable(3d_test ${SOURCE})
 target_link_libraries(3d_test ngame)
-file(COPY monkey.obj ProggyCleanCE.ttf DESTINATION .)
+file(COPY monkey.obj cube.obj Xolonium-Bold.ttf DESTINATION .)

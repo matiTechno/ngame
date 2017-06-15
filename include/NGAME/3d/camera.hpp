@@ -13,4 +13,5 @@ private:
     friend class Renderer3d;
     glm::mat4 proj;
     glm::mat4 view;
+    glm::vec3 pos;
 };

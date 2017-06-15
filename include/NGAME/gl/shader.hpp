@@ -43,7 +43,7 @@ private:
     // when loaded from file it's filename
     std::string id_name;
 
-    void make_program(const std::string& source) const;
+    bool make_program(const std::string& source) const;
 
     void load_uni_locations() const;
     Sh_part compile_shader(GLenum sh_type, const std::string& gl_source) const;
