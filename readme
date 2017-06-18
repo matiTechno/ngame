@@ -1,7 +1,7 @@
 ### all examples are aspect ratio independent (without black edges :) )
 * from 2017-06-07 most recent changes are at the beginning
 * temp compilation guide at the bottom
-* user guide for examples and projects should be placed in txt help.file in sub-folder
+* user guide for examples and projects should be placed in help.txt file in sub-folder
 * some examples are fullscreen --- to exit them you can use alt + f4
 
 todo: make Renderer2d more flexible
