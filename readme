@@ -4,6 +4,8 @@
 * user guide for examples and projects should be placed in txt help.file in sub-folder
 * some examples are fullscreen --- to exit them you can use alt + f4
 
+todo: make Renderer2d more flexible
+
 I could change const framework functions to normal and make other private and accessible to App by friend declaration.
 I could not expose renderer2d.flush() to clients, and implicitly call flush() on projection changes and similar functions.
 
