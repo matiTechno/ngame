@@ -13,10 +13,17 @@
 #include <NGAME/font_loader.hpp>
 #include <NGAME/blend.hpp>
 #include <NGAME/3d/renderer3d.hpp>
+#include <NGAME/guru.hpp>
 
 const App* App::handle = nullptr;
+App* App::nonConstHandle;
 
 App::~App() = default;
+
+guru::Guru& App::getGuru()
+{
+    return *nonConstHandle->guru;
+}
 
 App::App(int width, int height, const char *title, bool handle_quit, int gl_major, int gl_minor,
          unsigned int sdl_flags, int mixer_flags, int posx, int posy):
@@ -24,6 +31,7 @@ App::App(int width, int height, const char *title, bool handle_quit, int gl_majo
 {
     assert(!handle);
     handle = this;
+    nonConstHandle = this;
 
     SDL_version ver_compiled, ver_linked;
     SDL_VERSION(&ver_compiled);
@@ -86,6 +94,7 @@ App::App(int width, int height, const char *title, bool handle_quit, int gl_majo
     pp_unit = std::make_unique<PP_unit>(io.w, io.h);
     font_loader = std::make_unique<Font_loader>();
     renderer3d = std::make_unique<Renderer3d>();
+    guru = std::make_unique<guru::Guru>();
 
     glEnable(GL_BLEND);
     Blend::set_default();

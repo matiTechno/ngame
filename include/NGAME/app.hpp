@@ -13,6 +13,12 @@ class Font_loader;
 class Renderer3d;
 #include <glm/vec2.hpp>
 
+namespace guru
+{
+class Guru;
+class GuruScene;
+}
+
 struct IO
 {
     IO()
@@ -40,6 +46,10 @@ struct IO
 // to change blend function use Blend class
 // to make glBlend functions visible define NGAME_BLEND
 // before including NGAME/glad.h
+
+// There will be some mess with experimental things.
+// I need to add them and I want to avoid breaking previous examples.
+// But at the end api will be rebourned.
 class App
 {
 public:
@@ -78,6 +88,11 @@ private:
     mutable bool should_close = false;
     std::vector<Scene*> scenes_to_render;
     const bool handle_quit;
+    // new renderer and some hacks :D
+    std::unique_ptr<guru::Guru> guru;
+    static App* nonConstHandle;
+    friend class guru::GuruScene;
+    static guru::Guru& getGuru();
 
     void init_mixer(int mixer_flags);
 

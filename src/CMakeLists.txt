@@ -25,6 +25,9 @@ set(SOURCE
     3d/3d.sh
     3d/light.sh
     3d/cube.hpp
+    guru.cpp
+    guru.sh
+    guruscene.cpp
     )
 
 add_library(ngame ${SOURCE})
