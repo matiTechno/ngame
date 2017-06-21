@@ -7,6 +7,47 @@
 namespace guru
 {
 
+TriangleAgent::TriangleAgent()
+{
+    vertices[0].pos = glm::vec2(-0.5f, 0.35f);
+    vertices[1].pos = glm::vec2(0.f, 0.f);
+    vertices[2].pos = glm::vec2(0.5f, 0.f);
+    vertices[3].pos = glm::vec2(-0.5f, -0.35f);
+    vertices[4].pos = glm::vec2(0.f, 0.f);
+    vertices[5].pos = glm::vec2(0.5f, 0.f);
+}
+
+void TriangleAgent::render(Guru& guru)
+{
+    for(int i = 0; i < 6; ++i)
+        vertices[i].color = color;
+
+    glm::mat4 modelMatrix(1.f);
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(pos, 0.f));
+    modelMatrix = glm::rotate(modelMatrix, rotation, glm::vec3(0.f, 0.f, -1.f));
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(size, size, 1.f));
+    guru.addShape(vertices, 6, modelMatrix);
+}
+
+Circle::Circle()
+{
+    // this should be calculated at compile time
+    auto a = 2.f * glm::pi<float>() / count;
+    for(int i = 0; i < count; ++i)
+        vertices[i].pos = pos + glm::vec2(glm::sin(i * a), glm::cos(i * a));
+}
+
+void Circle::render(Guru& guru)
+{
+    for(int i = 0; i < count; ++i)
+        vertices[i].color = color;
+
+    glm::mat4 modelMatrix(1.f);
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(pos, 0.f));
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(radius, radius, 1.f));
+    guru.addShape(vertices, count, modelMatrix);
+}
+
 Guru::Guru():
     shader(
         #include "guru.sh"
@@ -44,7 +85,7 @@ Guru::Guru():
     glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), reinterpret_cast<const void*>(sizeof(float) * 12));
 }
 
-void Guru::addShape(guru::Vertex* vertices, int count, const glm::mat4& modelMatrix)
+void Guru::addShape(const guru::Vertex* vertices, int count, const glm::mat4& modelMatrix)
 {
     assert(numVtoRender + count <= this->vertices.size());
 
@@ -90,7 +131,7 @@ void Guru::render()
     boMat4.bind(GL_ARRAY_BUFFER);
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * numVtoRender / numVperShape, matrices.data(), GL_STREAM_DRAW);
     vao.bind();
-    glDrawArraysInstanced(GL_TRIANGLES, 0, numVperShape, numVtoRender / numVperShape);
+    glDrawArraysInstanced(glMode, 0, numVperShape, numVtoRender / numVperShape);
     numVtoRender = 0;
 }
 

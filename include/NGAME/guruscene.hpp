@@ -8,6 +8,8 @@ class Guru;
 
 class Vertex;
 
+// works as Vspace but with less features
+// sets projection for Renderer2d and Guru
 class GuruScene: public Scene
 {
 public:

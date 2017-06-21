@@ -23,7 +23,7 @@ class Guru
 public:
     Guru();
 
-    void addShape(Vertex* vertices, int count, const glm::mat4& modelMatrix = glm::mat4(1.f));
+    void addShape(const Vertex* vertices, int count, const glm::mat4& modelMatrix = glm::mat4(1.f));
     void setGlMode(GLenum mode);
     // can be nullptr,
     // only used with glMode = GL_TRIANGLES and similar
@@ -49,6 +49,37 @@ private:
     // call this at the end of Scene::render()
     friend class GuruScene;
     void render();bool fontMode = false;
+};
+
+// this shouldn't be there but ...
+class TriangleAgent
+{
+public:
+    TriangleAgent();
+    void render(Guru& guru);
+
+    float rotation = 0.f;
+    glm::vec2 pos;
+    float size;
+    glm::vec4 color{1.f, 1.f, 1.f, 1.f};
+
+private:
+    Vertex vertices[3];
+};
+
+class Circle
+{
+public:
+    Circle();
+    void render(Guru& guru);
+
+    glm::vec2 pos;
+    float radius;
+    glm::vec4 color{1.f, 1.f, 1.f, 1.f};
+
+private:
+    static constexpr int count = 10;
+    Vertex vertices[count];
 };
 
 } // guru
