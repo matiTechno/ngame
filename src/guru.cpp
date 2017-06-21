@@ -24,14 +24,13 @@ void TriangleAgent::render(Guru& guru)
 
     glm::mat4 modelMatrix(1.f);
     modelMatrix = glm::translate(modelMatrix, glm::vec3(pos, 0.f));
-    modelMatrix = glm::rotate(modelMatrix, rotation, glm::vec3(0.f, 0.f, -1.f));
+    modelMatrix = glm::rotate(modelMatrix, rotation, glm::vec3(0.f, 0.f, 1.f));
     modelMatrix = glm::scale(modelMatrix, glm::vec3(size, size, 1.f));
     guru.addShape(vertices, 6, modelMatrix);
 }
 
 Circle::Circle()
 {
-    // this should be calculated at compile time
     auto a = 2.f * glm::pi<float>() / count;
     for(int i = 0; i < count; ++i)
         vertices[i].pos = pos + glm::vec2(glm::sin(i * a), glm::cos(i * a));

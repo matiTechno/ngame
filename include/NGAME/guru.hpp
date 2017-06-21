@@ -51,20 +51,20 @@ private:
     void render();bool fontMode = false;
 };
 
-// this shouldn't be there but ...
+// this shouldn't be there but...
 class TriangleAgent
 {
 public:
     TriangleAgent();
     void render(Guru& guru);
 
-    float rotation = 0.f;
+    float rotation;
     glm::vec2 pos;
     float size;
     glm::vec4 color{1.f, 1.f, 1.f, 1.f};
 
 private:
-    Vertex vertices[3];
+    Vertex vertices[6];
 };
 
 class Circle
