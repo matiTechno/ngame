@@ -7,6 +7,7 @@
 #include <NGAME/font.hpp>
 #include <NGAME/text.hpp>
 #include <sstream>
+#include <NGAME/glad.h>
 
 Editor::Editor(const char* filename)
 {
@@ -28,15 +29,16 @@ Editor::Editor(const char* filename)
     if(!file.is_open())
         throw std::runtime_error("could not open file");
 
-    font = std::make_unique<Font>(font_loader.load_font("Inconsolata-Regular.ttf", 20));
+    font = std::make_unique<Font>(font_loader.load_font("ProggyCleanCE.ttf", 18));
     text = std::make_unique<Text>(*font);
-    text->color.a = 0.7f;
+    text->color = glm::vec4(1.f, 1.f, 0.f, 1.f);
     text->pos = glm::vec2(0.f, font->get_ascent());
     text->text.reserve(1000);
     penPos = text->pos;
     add(fileInput);
 
     SDL_GL_SetSwapInterval(0);
+    glClearColor(0.f, 0.15f, 0.f, 1.f);
 }
 
 Editor::~Editor()
@@ -120,6 +122,7 @@ void Editor::process_input()
         else if(key == SDLK_TAB)
             add("    ");
 
+        // I could use contidional operator, but...
         else if(key == ',') {if(upper) add('<'); else add(',');}
         else if(key == '.') {if(upper) add('>'); else add('.');}
         else if(key == '/') {if(upper) add('?'); else add('/');}
@@ -155,11 +158,11 @@ void Editor::render()
     renderer2d.set_projection(glm::vec2(0.f, 0.f), size);
     if(visible)
     {
-        auto proto = font->get_glyph('I');
+        auto proto = font->get_glyph('W');
         Sprite sprite;
-        sprite.pos = glm::vec2(penPos.x + proto.bearing.x, penPos.y - proto.bearing.y) - 1.5f;
-        sprite.size = glm::vec2(proto.tex_coords.z, proto.tex_coords.w) + 3.f;
-        sprite.color.a = 0.8f;
+        sprite.pos = glm::vec2(penPos.x + proto.bearing.x, penPos.y - proto.bearing.y - 2.f);
+        sprite.size = glm::vec2(proto.tex_coords.z, proto.tex_coords.w + 4.f);
+        sprite.color = glm::vec4(1.f, 1.f, 0.f, 1.f);
         renderer2d.render(sprite);
     }
     renderer2d.render(*text);
