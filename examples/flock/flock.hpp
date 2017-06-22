@@ -26,13 +26,14 @@ struct Boid
     void render(guru::Guru& guru);
 };
 
-class TestScene: public guru::GuruScene
+class SceneF: public guru::GuruScene
 {
 public:
-    TestScene();
+    SceneF();
 
 private:
     void worldRender() override;
+    void intUpdate();
 
     Wall walls[4];
     std::vector<Obstacle> obstacles;

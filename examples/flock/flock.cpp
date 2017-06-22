@@ -1,9 +1,10 @@
-#include "testscene.hpp"
+#include "flock.hpp"
 #include <NGAME/renderer2d.hpp>
 #include <NGAME/guru.hpp>
 #include <NGAME/glad.h>
 #include <NGAME/sprite.hpp>
 #include <math.h>
+#include <NGAME/app.hpp>
 
 void Wall::render(const Renderer2d& renderer)
 {renderer.render(pos, size, glm::ivec4(), nullptr, 0.f, glm::vec2(), glm::vec4(1.f, 0.f, 0.f, 0.5f));}
@@ -28,7 +29,7 @@ void Boid::render(guru::Guru& guru)
     triangle.render(guru);
 }
 
-TestScene::TestScene():
+SceneF::SceneF():
     GuruScene(glm::vec2(0.f, 0.f), glm::vec2(100.f, 100.f))
 {
     auto range = getWorldRange();
@@ -51,12 +52,20 @@ TestScene::TestScene():
     Boid boid;
     boid.pos = glm::vec2(70.f);
     boid.radius = 3.f;
-    boid.vel = glm::vec2(-1.f, 1.f);
+    boid.vel = glm::vec2(-1.f, 1.f) * 5.f;
     boids.push_back(boid);
 }
 
-void TestScene::worldRender()
+void SceneF::intUpdate()
 {
+    //for(auto& boid: boids)
+        //boid.pos += boid.vel * io.frametime;
+}
+
+void SceneF::worldRender()
+{
+    intUpdate();
+
     for(auto& wall: walls)
         wall.render(renderer2d);
     renderer2d.flush();
