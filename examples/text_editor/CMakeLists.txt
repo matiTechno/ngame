@@ -3,6 +3,6 @@ set(SOURCE
     editor.cpp
     editor.hpp
     )
-add_executable(editor ${SOURCE})
-target_link_libraries(editor ngame)
+add_executable(cxxedit ${SOURCE})
+target_link_libraries(cxxedit ngame)
 file(COPY ProggyCleanCE.ttf DESTINATION .)

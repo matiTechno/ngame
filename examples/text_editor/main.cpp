@@ -6,12 +6,12 @@ int main(int argc, char** argv)
 {
     if(argc != 2)
     {
-        std::cout << "cppedit <filename>" << std::endl;
+        std::cout << "cxxedit <filename>" << std::endl;
         return 0;
     }
     try
     {
-        App app(600, 600, ("matiTechno cppedit: " + std::string(argv[1])).c_str(),
+        App app(600, 600, ("matiTechno cxxedit: " + std::string(argv[1])).c_str(),
                 true, 3, 3, SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE);
         app.start<Editor>(argv[1]);
     }
