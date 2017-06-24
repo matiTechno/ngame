@@ -70,6 +70,8 @@ private:
 
     std::string pasteBuffer;
 
+    glm::vec2 projStart{0.f, 0.f};
+
     int setCursorToFirstNonWs();
 
     bool save = true;

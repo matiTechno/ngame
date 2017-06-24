@@ -44,6 +44,8 @@ Editor::Editor(const char* filename):
                 lines.back().pos = glm::vec2(margin.x, margin.y + font->get_linespace() * (lines.size() - 1));
                 lines.back().color = textColor;
             }
+            else if(c == '\t')
+                lines.back().text.append("    ");
             else
                 lines.back().text.push_back(c);
         }
@@ -156,7 +158,7 @@ void Editor::render()
         visible = !visible;
     }
 
-    float addXMargin = 2.f * font->get_glyph(' ').advance;
+    float addXMargin = font->get_glyph(' ').advance;
     auto advance = font->get_glyph(' ').advance;
     int lineFirst = 0, lineLast = lines.size() - 1;
     addXMargin += std::to_string(lineLast).size() * advance + advance;
@@ -170,13 +172,22 @@ void Editor::render()
         sprite.size = glm::vec2(proto.tex_coords.z, font->get_ascent() - font->get_descent());
 
         // set projection
-        glm::vec2 projPos;
-        glm::vec2 visPoint = sprite.pos + sprite.size + glm::vec2(font->get_glyph(' ').advance, + 2.f * font->get_linespace());
-        if(visPoint.x > size.x)
-            projPos.x = visPoint.x - size.x;
-        if(visPoint.y > size.y)
-            projPos.y = visPoint.y - size.y;
-        renderer2d.set_projection(projPos, size);
+        auto visPoint = sprite.pos;
+        auto visPointSize = sprite.size + glm::vec2(font->get_glyph(' ').advance, 2.f * font->get_linespace());
+
+        if(visPoint.x + visPointSize.x > projStart.x + size.x)
+            projStart.x = visPoint.x + visPointSize.x - size.x;
+
+        if(visPoint.y + visPointSize.y > projStart.y + size.y)
+            projStart.y = visPoint.y + visPointSize.y - size.y;
+
+        if(visPoint.x - margin.x - addXMargin < projStart.x)
+            projStart.x = visPoint.x - margin.x - addXMargin;
+
+        if(visPoint.y - margin.y < projStart.y)
+            projStart.y = visPoint.y - margin.y;
+
+        renderer2d.set_projection(projStart, size);
 
         if(visible)
         {
@@ -185,13 +196,13 @@ void Editor::render()
         }
         // calculate visibe lines range
         for(int i = 0; i < lines.size(); ++i)
-            if(lines[i].pos.y > projPos.y)
+            if(lines[i].pos.y - margin.y > projStart.y)
             {
                 lineFirst = i;
                 break;
             }
         for(int i = lineFirst; i < lines.size(); ++i)
-            if(lines[i].pos.y > projPos.y + size.y)
+            if(lines[i].pos.y > projStart.y + size.y - 2.f * font->get_linespace())
             {
                 lineLast = i - 1;
                 break;
