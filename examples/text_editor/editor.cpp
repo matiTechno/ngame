@@ -25,7 +25,7 @@ Editor::Editor(const char* filename):
     ss << file.rdbuf();
     std::string fileInput;
     fileInput = ss.str();
-    font = std::make_unique<Font>(font_loader.load_font("ProggyCleanCE.ttf", 18));
+    font = std::make_unique<Font>(font_loader.load_font("ProggyCleanCE.ttf", 16));
     margin.x = font->get_glyph(' ').advance;
     margin.y = font->get_linespace() + font->get_ascent();
     {
@@ -54,12 +54,15 @@ Editor::Editor(const char* filename):
 
 Editor::~Editor()
 {
-    std::ofstream file;
-    file.open(filename);
-    if(!file.is_open())
-        return;
-    for(auto& line: lines)
-        file << line.text << '\n';
+    if(save)
+    {
+        std::ofstream file;
+        file.open(filename);
+        if(!file.is_open())
+            return;
+        for(auto& line: lines)
+            file << line.text << '\n';
+    }
 }
 
 void Editor::start()
@@ -70,6 +73,10 @@ void Editor::start()
 
 void Editor::process_input()
 {
+    tapTime += io.frametime;
+    if(tapTime > timeToTap)
+        taps = 0;
+
     for(auto& event: io.events)
     {
         if(event.type != SDL_KEYDOWN)
@@ -79,7 +86,6 @@ void Editor::process_input()
         visible = true;
 
         auto key = event.key.keysym.sym;
-        auto upper = SDL_GetModState() & (KMOD_CAPS | KMOD_SHIFT);
 
         if(key == SDLK_ESCAPE)
         {
@@ -92,12 +98,27 @@ void Editor::process_input()
                     --cursorPos.x;
                 lastLineX = cursorPos.x;
             }
+            {
+                tapTime = 0.f;
+                ++taps;
+                if(taps == 3)
+                {
+                    save = false;
+                    scenes_to_pop = 1;
+                }
+            }
             continue;
         }
-        if(upper)
+
+        auto caps = SDL_GetModState() & KMOD_CAPS;
+        auto shift = SDL_GetModState() & KMOD_SHIFT;
+        if(caps || shift)
         {
             if(key >= 'a' && key <= 'z') key -= 32;
-            else if(key == ',') key = '<';
+        }
+        else if(shift)
+        {
+            if(key == ',') key = '<';
             else if(key == '.') key = '>';
             else if(key == '/') key = '?';
             else if(key == ';') key = ':';
@@ -134,40 +155,73 @@ void Editor::render()
         accumulator -= blinkTime;
         visible = !visible;
     }
-    renderer2d.set_projection(glm::vec2(0.f, 0.f), size);
-    // line numbers
+
     float addXMargin = 2.f * font->get_glyph(' ').advance;
-    {
-        Text text(*font);
-        text.pos = margin;
-        for(int i = 0; i < lines.size(); ++i)
-        {
-            text.text.append(std::to_string(i));
-            text.text.push_back('\n');
-        }
-        renderer2d.render(text);
-        addXMargin += text.get_size().x;
-    }
+    auto advance = font->get_glyph(' ').advance;
+    int lineFirst = 0, lineLast = lines.size() - 1;
+    addXMargin += std::to_string(lineLast).size() * advance + advance;
+
     // cursor
-    if(visible)
     {
         auto proto = font->get_glyph('W');
         Sprite sprite;
         sprite.pos = glm::vec2(getCursorAdvanceX() + proto.bearing.x + addXMargin,
                                margin.y + cursorPos.y * font->get_linespace() - proto.bearing.y);
         sprite.size = glm::vec2(proto.tex_coords.z, font->get_ascent() - font->get_descent());
-        sprite.color = glm::vec4(1.f, 0.5f, 0.f, 1.f);
-        renderer2d.render(sprite);
+
+        // set projection
+        glm::vec2 projPos;
+        glm::vec2 visPoint = sprite.pos + sprite.size + glm::vec2(font->get_glyph(' ').advance, + 2.f * font->get_linespace());
+        if(visPoint.x > size.x)
+            projPos.x = visPoint.x - size.x;
+        if(visPoint.y > size.y)
+            projPos.y = visPoint.y - size.y;
+        renderer2d.set_projection(projPos, size);
+
+        if(visible)
+        {
+            sprite.color = glm::vec4(1.f, 0.5f, 0.f, 1.f);
+            renderer2d.render(sprite);
+        }
+        // calculate visibe lines range
+        for(int i = 0; i < lines.size(); ++i)
+            if(lines[i].pos.y > projPos.y)
+            {
+                lineFirst = i;
+                break;
+            }
+        for(int i = lineFirst; i < lines.size(); ++i)
+            if(lines[i].pos.y > projPos.y + size.y)
+            {
+                lineLast = i - 1;
+                break;
+            }
+    }
+    // line numbers
+    {
+        static Text text(*font);
+        text.pos.x = margin.x;
+        text.pos.y = lines[lineFirst].pos.y;
+        text.text.clear();
+        for(int i = lineFirst; i <= lineLast; ++i)
+        {
+            text.text.append(std::to_string(i));
+            text.text.push_back('\n');
+        }
+        renderer2d.render(text);
+
     }
     // actual text
-    for(auto& line: lines)
+    for(int i = lineFirst; i <= lineLast; ++i)
     {
-        line.pos.x = addXMargin + margin.x;
-        renderer2d.render(line);
+        lines[i].pos.x = addXMargin + margin.x;
+        renderer2d.render(lines[i]);
     }
     // insert info
     if(mode == Mode::insert)
     {
+        renderer2d.flush();
+        renderer2d.set_projection(glm::vec2(0.f), size);
         Text text(*font);
         text.pos = glm::vec2(0.f, size.y - font->get_linespace());
         text.text = " -- INSERT MODE --";
@@ -245,6 +299,19 @@ void Editor::processInputInsert(int key)
     }
 }
 
+int Editor::setCursorToFirstNonWs()
+{
+    cursorPos.x = 0;
+    for(auto c: lines[cursorPos.y].text)
+    {
+        if(c == ' ' && cursorPos.x < lines[cursorPos.y].text.size() - 2)
+            ++cursorPos.x;
+        else
+            break;
+    }
+    lastLineX = cursorPos.x;
+}
+
 // static_cast<int>() to avoid overflow
 void Editor::processInputMove(int key)
 {
@@ -315,7 +382,7 @@ void Editor::processInputMove(int key)
     else if(inputMoveBuffer == "I")
     {
         mode = Mode::insert;
-        cursorPos.x = 0;
+        setCursorToFirstNonWs();
         inputMoveBuffer.clear();
     }
     else if(inputMoveBuffer == "A")
@@ -324,7 +391,6 @@ void Editor::processInputMove(int key)
         cursorPos.x = lines[cursorPos.y].text.size();
         inputMoveBuffer.clear();
     }
-    // hack
     else if(inputMoveBuffer == "gg" || inputMoveBuffer == "g")
     {
         if(inputMoveBuffer != "gg")
@@ -354,6 +420,53 @@ void Editor::processInputMove(int key)
         cursorPos.x = 0;
         addNewLine();
         --cursorPos.y;
+        inputMoveBuffer.clear();
+    }
+    else if(inputMoveBuffer == "d" || inputMoveBuffer == "dd")
+    {
+        if(inputMoveBuffer != "dd")
+            return;
+
+        pasteBuffer = lines[cursorPos.y].text;
+        if(pasteBuffer.size() == 0)
+            pasteBuffer = "\n";
+
+        if(lines.size() > 1)
+        {
+            lines.erase(lines.begin() + cursorPos.y);
+            for(int i = cursorPos.y; i < lines.size(); ++i)
+                lines[i].pos -= font->get_linespace();
+        }
+        else
+            lines[0].text.clear();
+
+        if(cursorPos.y == lines.size())
+            --cursorPos.y;
+
+        setCursorToFirstNonWs();
+        inputMoveBuffer.clear();
+    }
+    else if(inputMoveBuffer == "p" && pasteBuffer.size())
+    {
+        cursorPos.x = 0;
+        addNewLine();
+        std::swap(lines[cursorPos.y].text, lines[cursorPos.y - 1].text);
+        if(pasteBuffer != "\n")
+            lines[cursorPos.y].text = pasteBuffer;
+
+        setCursorToFirstNonWs();
+        inputMoveBuffer.clear();
+    }
+    else if(inputMoveBuffer == "x")
+    {
+        auto& line = lines[cursorPos.y].text;
+        if(line.size())
+        {
+            line.erase(cursorPos.x, 1);
+            if(cursorPos.x > line.size() - 1)
+                cursorPos.x = line.size() - 1;
+            lastLineX = cursorPos.x;
+        }
         inputMoveBuffer.clear();
     }
     else

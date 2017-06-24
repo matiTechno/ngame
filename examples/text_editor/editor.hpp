@@ -7,9 +7,11 @@ class Font;
 class Text;
 #include <glm/vec4.hpp>
 
-// render only visible lines
-// calculate diffrently lineNumbers text size
-// projection follow cursor
+// runs without a single lag on 11MB file
+
+// render only visible lines --- done
+// calculate diffrently lineNumbers text size --- done
+// projection follow cursor --- done
 
 // I should move OpenGL context to other thread so
 // I cound run SDL event loop without waiting
@@ -20,6 +22,10 @@ class Text;
 // temp files
 // opening editor without file specified
 // rethink inputMoveBuffer stuff
+// adding command mode will require some refactoring
+// but it will be relativly easy to implement
+
+// IMPORTANT: to exit editor without saving file triple-tap ESC
 class Editor: public Scene
 {
 public:
@@ -61,4 +67,13 @@ private:
 
     void processInputMove(int key);
     std::string inputMoveBuffer;
+
+    std::string pasteBuffer;
+
+    int setCursorToFirstNonWs();
+
+    bool save = true;
+    float timeToTap = 0.25f;
+    int taps = 0;
+    float tapTime;
 };
