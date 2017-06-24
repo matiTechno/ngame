@@ -116,7 +116,7 @@ void Editor::process_input()
         {
             if(key >= 'a' && key <= 'z') key -= 32;
         }
-        else if(shift)
+        if(shift)
         {
             if(key == ',') key = '<';
             else if(key == '.') key = '>';
