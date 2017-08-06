@@ -11,18 +11,26 @@ struct Wall
     void render(const Renderer2d& renderer);
 };
 
-struct Obstacle
+struct Circle
 {
-    glm::vec2 pos;
+    glm::vec2 pos; /*center*/
     float radius;
+};
+
+struct Obstacle: Circle
+{
     void render(guru::Guru& guru);
 };
 
-struct Boid
+struct Boid: Circle
 {
     glm::vec2 vel;
-    glm::vec2 pos; /*center*/
-    float radius;
+    glm::vec2 acc;
+
+    static constexpr float maxVel = 50.f;
+    static constexpr float maxAcc = 40.f;
+    static constexpr float maxTurnRate = 6.28f;
+
     void render(guru::Guru& guru);
 };
 

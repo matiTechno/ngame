@@ -46,9 +46,11 @@ private:
     // get these values at runtime
     GLenum srcAlpha, dstAlpha;
 
+    bool fontMode = false;
+
     // call this at the end of Scene::render()
     friend class GuruScene;
-    void render();bool fontMode = false;
+    void render();
 };
 
 // this shouldn't be there but...
@@ -78,7 +80,7 @@ public:
     glm::vec4 color{1.f, 1.f, 1.f, 1.f};
 
 private:
-    static constexpr int count = 10;
+    static constexpr int count = 15;
     Vertex vertices[count];
 };
 

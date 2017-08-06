@@ -33,7 +33,7 @@ Circle::Circle()
 {
     auto a = 2.f * glm::pi<float>() / count;
     for(int i = 0; i < count; ++i)
-        vertices[i].pos = pos + glm::vec2(glm::sin(i * a), glm::cos(i * a));
+        vertices[i].pos = glm::vec2(glm::sin(i * a), glm::cos(i * a));
 }
 
 void Circle::render(Guru& guru)

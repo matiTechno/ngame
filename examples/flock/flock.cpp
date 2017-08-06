@@ -6,6 +6,30 @@
 #include <math.h>
 #include <NGAME/app.hpp>
 
+void reflect(Boid& boid, const Circle& obstacle)
+{
+    // B - boid center, O - obstacle center
+    auto OB = boid.pos - obstacle.pos;
+    if(glm::length(OB) < boid.radius + obstacle.radius)
+        boid.vel = glm::reflect(boid.vel, glm::normalize(OB));
+}
+
+void reflect(Boid& boid, const Wall& wall)
+{
+    auto wallHalfSize = wall.size / 2.f;
+    auto wallCenter = wall.pos + wallHalfSize;
+
+    // B - boid center, W - wall center
+    auto WB = boid.pos - wallCenter;
+    auto clamped = glm::clamp(WB, -wallHalfSize, wallHalfSize);
+    // P - closest collision point
+    auto P = wallCenter + clamped;
+    auto PB = boid.pos - P;
+
+    if(glm::length(PB) < boid.radius)
+        boid.vel = glm::reflect(boid.vel, glm::normalize(PB));
+}
+
 void Wall::render(const Renderer2d& renderer)
 {renderer.render(pos, size, glm::ivec4(), nullptr, 0.f, glm::vec2(), glm::vec4(1.f, 0.f, 0.f, 0.5f));}
 
@@ -14,6 +38,7 @@ void Obstacle::render(guru::Guru& guru)
     guru.setGlMode(GL_LINE_LOOP);
     guru::Circle circle;
     circle.pos = pos;
+    circle.color = glm::vec4(0.f, 1.f, 1.f, 1.f);
     circle.radius = radius;
     circle.render(guru);
 }
@@ -52,14 +77,22 @@ SceneF::SceneF():
     Boid boid;
     boid.pos = glm::vec2(70.f);
     boid.radius = 3.f;
-    boid.vel = glm::vec2(-1.f, 1.f) * 5.f;
+    boid.vel = glm::vec2(-1.f, 1.f) * 15.f;
     boids.push_back(boid);
 }
 
 void SceneF::intUpdate()
 {
-    //for(auto& boid: boids)
-        //boid.pos += boid.vel * io.frametime;
+    for(auto& boid: boids)
+    {
+        boid.pos += boid.vel * io.frametime;
+
+        for(auto& obstacle: obstacles)
+            reflect(boid, obstacle);
+
+        for(auto& wall: walls)
+            reflect(boid, wall);
+    }
 }
 
 void SceneF::worldRender()
@@ -72,7 +105,6 @@ void SceneF::worldRender()
 
     for(auto& obstacle: obstacles)
         obstacle.render(guru);
-
     for(auto& boid: boids)
         boid.render(guru);
 }
