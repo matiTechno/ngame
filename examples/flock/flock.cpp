@@ -5,6 +5,7 @@
 #include <NGAME/sprite.hpp>
 #include <math.h>
 #include <NGAME/app.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 // PC - collision point -> circle center
 glm::vec2 getPC(const Circle& circle, const Rect& rect)
@@ -63,7 +64,7 @@ void Boid::render(guru::Guru& guru)
     triangle.pos = pos;
     triangle.size = radius * 2.f;
     triangle.color = color;
-    triangle.rotation = atan2f(vel.y, vel.x);
+    triangle.rotation = dirAngle;
     triangle.render(guru);
 }
 
@@ -94,12 +95,38 @@ SceneF::SceneF():
     o.pos = glm::vec2(20.f, 75.f);
     o.radius = 5.f;
     obstacles.push_back(o);
-    Boid boid;
-    boid.pos = glm::vec2(90.f);
-    boid.radius = 3.f;
-    boid.vel = glm::vec2(-1.f, 1.f) * 15.f;
-    boid.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
-    boids.push_back(boid);
+    {
+        Boid boid;
+        boid.pos = glm::vec2(50.f, 92.f);
+        boid.radius = 3.f;
+        boid.vel = glm::normalize(glm::vec2(-1.f, 1.f)) * 25.f;
+        boid.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+        boids.push_back(boid);
+    }
+    {
+        Boid boid;
+        boid.pos = glm::vec2(90.f);
+        boid.radius = 3.f;
+        boid.vel = glm::normalize(glm::vec2(-1.f, 1.f)) * 25.f;
+        boid.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+        boids.push_back(boid);
+    }
+    {
+        Boid boid;
+        boid.pos = glm::vec2(15.f);
+        boid.radius = 3.f;
+        boid.vel = glm::normalize(glm::vec2(-1.f, 1.f)) * 25.f;
+        boid.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+        boids.push_back(boid);
+    }
+    {
+        Boid boid;
+        boid.pos = glm::vec2(60.f, 20.f);
+        boid.radius = 3.f;
+        boid.vel = glm::normalize(glm::vec2(-1.f, 1.f)) * 25.f;
+        boid.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+        boids.push_back(boid);
+    }
 }
 
 static Rect rect;
@@ -108,30 +135,84 @@ void SceneF::intUpdate()
 {
     for(auto& boid: boids)
     {
+        auto accLen = glm::length(boid.acc);
+        if(accLen > boid.maxAcc)
+            boid.acc = boid.maxAcc * glm::normalize(boid.acc);
+
+        auto velLen = glm::length(boid.vel);
+        if(velLen > boid.maxVel)
+            boid.vel = boid.maxVel * glm::normalize(boid.vel);
+
+        boid.vel += boid.acc * io.frametime;
         boid.pos += boid.vel * io.frametime;
+        boid.acc = glm::vec2(0.f);
+        boid.dirAngle = atan2f(boid.vel.y, boid.vel.x);
+        boid.sight = glm::length(boid.vel * 0.5f);
 
-        // * tag possible obstacles
+        // 1: tag possible obstacles
 
-        std::vector<Obstacle*> tagged;
+        std::vector<Circle*> tagged;
         Rect rect{boid.pos - glm::vec2(boid.sight), glm::vec2(boid.sight * 2.f)};
-        renderer2d.render(rect.pos, rect.size, glm::ivec4(), nullptr, 0.f, glm::vec2(), glm::vec4(1.f, 1.f, 0.f, 0.1f));
+
+        // detection area visualisation
+        {
+            //renderer2d.render(rect.pos, rect.size, glm::ivec4(), nullptr, 0.f, glm::vec2(), glm::vec4(1.f, 1.f, 0.f, 0.05f));
+
+            glm::vec2 pos(boid.pos.x, boid.pos.y - boid.radius);
+            renderer2d.render(pos, glm::vec2(boid.sight, boid.radius * 2.f),
+                              glm::ivec4(), nullptr, -boid.dirAngle, boid.pos - pos, glm::vec4(1.f, 1.f, 0.f, 0.2f));
+        }
+
         for(auto& obstacle: obstacles)
         {
             if(isCollision(obstacle, rect))
-            {
                 tagged.push_back(&obstacle);
-                obstacle.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
-            }
-            else
-                obstacle.color = glm::vec4(0.f, 1.f, 1.f, 1.f);
+        }
+        for(auto& obstacle: boids)
+        {
+            if(&obstacle != &boid && isCollision(obstacle, rect))
+                tagged.push_back(&obstacle);
         }
 
-        // * convert them to boid local space
-        // * find nearest collision point
-        // * calculate steering force
+        float collDistX = 1000.f; // @ make more generic
+        float collLocalY;
+        for(auto ptr: tagged)
+        {
+            // 2: convert them to boid local space
 
-        for(auto& obstacle: obstacles)
-            reflect(boid, obstacle);
+            auto& obstacle = *ptr;
+            auto localPos = glm::rotate(obstacle.pos - boid.pos, -boid.dirAngle);
+
+            // 3: find nearest collision point
+
+            auto expandedRadius = boid.radius + obstacle.radius;
+
+            if(localPos.x < 0.f || glm::abs(localPos.y) > expandedRadius)
+                continue;
+
+            auto sqrtPart = glm::sqrt(expandedRadius * expandedRadius - localPos.y * localPos.y);
+            auto x = localPos.x - sqrtPart;
+            if(x < 0.f)
+                x = localPos.x + sqrtPart;
+
+            if(x < collDistX)
+            {
+                collDistX = x;
+                collLocalY = localPos.y;
+            }
+        }
+
+        // 4: calculate steering force
+
+        if(collDistX != 0.f)
+        {
+            float coeff = 1.f + (boid.sight - collDistX) / collDistX;
+            auto localForce = glm::vec2(-30.f, (-collLocalY) * 5.f) * coeff;
+            boid.acc += glm::rotate(localForce, boid.dirAngle);
+        }
+
+        if(glm::length(boid.vel) < boid.maxVel)
+            boid.acc += 30.f * glm::normalize(boid.vel);
 
         for(auto& wall: walls)
             reflect(boid, wall);

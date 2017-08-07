@@ -25,7 +25,7 @@ struct Wall: public Rect
 
 struct Obstacle: public Circle
 {
-    glm::vec4 color;
+    glm::vec4 color{1.f, 1.f, 1.f, 1.f};
     void render(guru::Guru& guru);
 };
 
@@ -34,10 +34,12 @@ struct Boid: public Circle
     glm::vec2 vel;
     glm::vec2 acc{0.f, 0.f};
     glm::vec4 color;
-    static constexpr float sight = 12.f;
-    static constexpr float targetVel = 10.f;
-    static constexpr float maxVel = 20.f;
-    static constexpr float maxAcc = 30.f;
+    float dirAngle;
+    float sight;
+
+    static constexpr float maxVel = 40.f;
+    static constexpr float maxAcc = 500.f;
+
     void render(guru::Guru& guru);
 };
 
