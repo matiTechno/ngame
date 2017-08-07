@@ -94,22 +94,12 @@ SceneF::SceneF():
     o.pos = glm::vec2(20.f, 75.f);
     o.radius = 5.f;
     obstacles.push_back(o);
-    {
-        Boid boid;
-        boid.pos = glm::vec2(90.f);
-        boid.radius = 3.f;
-        boid.vel = glm::vec2(-1.f, 1.f) * 15.f;
-        boid.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
-        boids.push_back(boid);
-    }
-    {
-        Boid boid;
-        boid.pos = glm::vec2(10.f);
-        boid.radius = 1.f;
-        boid.vel = glm::vec2(-1.f, 1.f) * 20.f;
-        boid.color = glm::vec4(1.f, 1.f, 0.f, 1.f);
-        boids.push_back(boid);
-    }
+    Boid boid;
+    boid.pos = glm::vec2(90.f);
+    boid.radius = 3.f;
+    boid.vel = glm::vec2(-1.f, 1.f) * 15.f;
+    boid.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+    boids.push_back(boid);
 }
 
 static Rect rect;

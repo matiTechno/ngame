@@ -19,14 +19,11 @@ TriangleAgent::TriangleAgent()
 
 void TriangleAgent::render(Guru& guru)
 {
-    for(int i = 0; i < 6; ++i)
-        vertices[i].color = color;
-
     glm::mat4 modelMatrix(1.f);
     modelMatrix = glm::translate(modelMatrix, glm::vec3(pos, 0.f));
     modelMatrix = glm::rotate(modelMatrix, rotation, glm::vec3(0.f, 0.f, 1.f));
     modelMatrix = glm::scale(modelMatrix, glm::vec3(size, size, 1.f));
-    guru.addShape(vertices, 6, modelMatrix);
+    guru.addShape(vertices, 6, color, modelMatrix);
 }
 
 Circle::Circle()
@@ -38,13 +35,10 @@ Circle::Circle()
 
 void Circle::render(Guru& guru)
 {
-    for(int i = 0; i < count; ++i)
-        vertices[i].color = color;
-
     glm::mat4 modelMatrix(1.f);
     modelMatrix = glm::translate(modelMatrix, glm::vec3(pos, 0.f));
     modelMatrix = glm::scale(modelMatrix, glm::vec3(radius, radius, 1.f));
-    guru.addShape(vertices, count, modelMatrix);
+    guru.addShape(vertices, count, color, modelMatrix);
 }
 
 Guru::Guru():
@@ -63,10 +57,16 @@ Guru::Guru():
     vbo.bind(GL_ARRAY_BUFFER);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<const void*>(offsetof(Vertex, pos)));
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<const void*>(offsetof(Vertex, texCoord)));
-    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<const void*>(offsetof(Vertex, color)));
+
+    // INSTANCED
+
+    // color
+    boColor.bind(GL_ARRAY_BUFFER);
+    glEnableVertexAttribArray(2);
+    glVertexAttribDivisor(2, 1);
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const void*>(0));
 
     // model matrix
     boMat4.bind(GL_ARRAY_BUFFER);
@@ -84,7 +84,8 @@ Guru::Guru():
     glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), reinterpret_cast<const void*>(sizeof(float) * 12));
 }
 
-void Guru::addShape(const guru::Vertex* vertices, int count, const glm::mat4& modelMatrix)
+void Guru::addShape(const guru::Vertex* vertices, int count, const glm::vec4& color,
+                    const glm::mat4& modelMatrix)
 {
     assert(numVtoRender + count <= this->vertices.size());
 
@@ -96,6 +97,7 @@ void Guru::addShape(const guru::Vertex* vertices, int count, const glm::mat4& mo
 
     auto numShapes = numVtoRender / numVperShape;
     matrices[numShapes] = modelMatrix;
+    colors[numShapes] = color;
 
     for(int i = numVtoRender; i < numVtoRender + count; ++i)
     {
@@ -129,8 +131,13 @@ void Guru::render()
 
     vbo.bind(GL_ARRAY_BUFFER);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * numVtoRender, vertices.data(), GL_STREAM_DRAW);
+
     boMat4.bind(GL_ARRAY_BUFFER);
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * numInstances, matrices.data(), GL_STREAM_DRAW);
+
+    boColor.bind(GL_ARRAY_BUFFER);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * numInstances, colors.data(), GL_STREAM_DRAW);
+
     vao.bind();
     glDrawArraysInstanced(glMode, 0, numVperShape, numInstances);
     numVtoRender = 0;

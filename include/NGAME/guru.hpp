@@ -15,7 +15,6 @@ struct Vertex
 {
     glm::vec2 pos;
     glm::vec2 texCoord;
-    glm::vec4 color;
 };
 
 class Guru
@@ -23,7 +22,8 @@ class Guru
 public:
     Guru();
 
-    void addShape(const Vertex* vertices, int count, const glm::mat4& modelMatrix = glm::mat4(1.f));
+    void addShape(const Vertex* vertices, int count, const glm::vec4& color = glm::vec4(1.f),
+                  const glm::mat4& modelMatrix = glm::mat4(1.f));
     void setGlMode(GLenum mode);
     // can be nullptr,
     // only used with glMode = GL_TRIANGLES and similar
@@ -33,10 +33,11 @@ public:
     void setProjection(glm::vec2 start, glm::vec2 range);
 
 private:
-    std::array<Vertex, 10000> vertices;
+    std::array<Vertex, 100> vertices;
     std::array<glm::mat4, 10000> matrices;
+    std::array<glm::vec4, 10000> colors;
     VAO vao;
-    BO vbo, boMat4;
+    BO vbo, boMat4, boColor;
     Shader shader;
     int numVtoRender = 0;
     int numVperShape = 6;
