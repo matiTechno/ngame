@@ -125,12 +125,14 @@ void Guru::render()
     else
         glUniform1i(shader.get_uni_location("renderType"), 0);
 
+    auto numInstances = numVtoRender / numVperShape;
+
     vbo.bind(GL_ARRAY_BUFFER);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * numVtoRender, vertices.data(), GL_STREAM_DRAW);
     boMat4.bind(GL_ARRAY_BUFFER);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * numVtoRender / numVperShape, matrices.data(), GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * numInstances, matrices.data(), GL_STREAM_DRAW);
     vao.bind();
-    glDrawArraysInstanced(glMode, 0, numVperShape, numVtoRender / numVperShape);
+    glDrawArraysInstanced(glMode, 0, numVperShape, numInstances);
     numVtoRender = 0;
 }
 

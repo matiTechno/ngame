@@ -3,12 +3,12 @@
 class Renderer2d;
 namespace guru {class Guru;}
 #include <vector>
+#include <glm/vec4.hpp>
 
-struct Wall
+struct Rect
 {
     glm::vec2 pos;
     glm::vec2 size;
-    void render(const Renderer2d& renderer);
 };
 
 struct Circle
@@ -17,20 +17,27 @@ struct Circle
     float radius;
 };
 
-struct Obstacle: Circle
+struct Wall: public Rect
 {
+    glm::vec4 color;
+    void render(const Renderer2d& renderer);
+};
+
+struct Obstacle: public Circle
+{
+    glm::vec4 color;
     void render(guru::Guru& guru);
 };
 
-struct Boid: Circle
+struct Boid: public Circle
 {
     glm::vec2 vel;
-    glm::vec2 acc;
-
-    static constexpr float maxVel = 50.f;
-    static constexpr float maxAcc = 40.f;
-    static constexpr float maxTurnRate = 6.28f;
-
+    glm::vec2 acc{0.f, 0.f};
+    glm::vec4 color;
+    static constexpr float sight = 12.f;
+    static constexpr float targetVel = 10.f;
+    static constexpr float maxVel = 20.f;
+    static constexpr float maxAcc = 30.f;
     void render(guru::Guru& guru);
 };
 
