@@ -87,7 +87,7 @@ Guru::Guru():
 void Guru::addShape(const guru::Vertex* vertices, int count, const glm::vec4& color,
                     const glm::mat4& modelMatrix)
 {
-    assert(numVtoRender + count <= this->vertices.size());
+    assert(count <= this->vertices.size());
 
     if(numVperShape != count)
     {
@@ -99,7 +99,7 @@ void Guru::addShape(const guru::Vertex* vertices, int count, const glm::vec4& co
     matrices[numShapes] = modelMatrix;
     colors[numShapes] = color;
 
-    for(int i = numVtoRender; i < numVtoRender + count; ++i)
+    for(int i = 0; i < count; ++i)
     {
         this->vertices[i] = *vertices;
         ++vertices;

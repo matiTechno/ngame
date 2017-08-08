@@ -17,6 +17,9 @@ struct Vertex
     glm::vec2 texCoord;
 };
 
+// BUG: adding different shape with current number of vertices per instance
+// will not flush the buffers
+// this class needs major redesign
 class Guru
 {
 public:
@@ -40,7 +43,7 @@ private:
     BO vbo, boMat4, boColor;
     Shader shader;
     int numVtoRender = 0;
-    int numVperShape = 6;
+    int numVperShape;
     // ...
     GLenum glMode = GL_TRIANGLES;
     Texture* texture = nullptr;

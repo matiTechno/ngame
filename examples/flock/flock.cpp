@@ -204,14 +204,13 @@ void SceneF::intUpdate()
 
         // 4: calculate steering force
 
-        if(collDistX != 0.f)
+        if(collDistX != 1000.f)
         {
             float coeff = 1.f + (boid.sight - collDistX) / collDistX;
             auto localForce = glm::vec2(-30.f, (-collLocalY) * 5.f) * coeff;
             boid.acc += glm::rotate(localForce, boid.dirAngle);
         }
-
-        if(glm::length(boid.vel) < boid.maxVel)
+        else if(glm::length(boid.vel) < boid.maxVel)
             boid.acc += 30.f * glm::normalize(boid.vel);
 
         for(auto& wall: walls)
