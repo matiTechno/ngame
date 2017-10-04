@@ -18,7 +18,7 @@ endif()
 #    "*.sh")
 #add_custom_target(headers SOURCES ${headers})
 
-add_definitions(-DGLM_FORCE_NO_CTOR_INIT)
+add_definitions(-DGLM_FORCE_NO_CTOR_INIT -DGLM_ENABLE_EXPERIMENTAL)
 
 include_directories(./include)
 
