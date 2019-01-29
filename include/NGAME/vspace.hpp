@@ -2,6 +2,7 @@
 
 #include "scene.hpp"
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 class Texture;
 
 // vspace = virtual space (minimal visible rect)

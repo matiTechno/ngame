@@ -65,7 +65,7 @@ struct Ball
 struct Paddle: public Bbox
 {
     static constexpr float vel_len = 480.f;
-    static constexpr float min_angle = glm::pi<float>() / 8.f;
+    static constexpr float min_angle = 3.14f / 8.f;
 
     float vel;
 
